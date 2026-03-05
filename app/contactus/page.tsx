@@ -154,14 +154,19 @@ export default function ContactUs() {
                     />
                 </div>
 
-                <div className="absolute left-0 right-0 top-0">
+                {/* ✅ FIX: map drag ishlashi uchun wrapper click-through */}
+                <div className="absolute left-0 right-0 top-0 pointer-events-none">
                     <div className="max-w-330 mx-auto px-4 sm:px-6">
-                        <div className="-translate-y-56 md:-translate-y-64 bg-gray-100 rounded-2xl shadow-xl p-8 md:p-12 max-w-3xl mx-auto z-10 relative">                            <p className="text-emerald-500 text-sm text-center mb-2">
-                            Your Next Trip
-                        </p>
+                        {/* ✅ FIX: form o'zi ishlashi uchun pointer-events-auto */}
+                        <div className="-translate-y-56 md:-translate-y-64 bg-gray-100 rounded-2xl shadow-xl p-8 md:p-12 max-w-3xl mx-auto z-10 relative pointer-events-auto">
+                            <p className="text-emerald-500 text-sm text-center mb-2">
+                                Your Next Trip
+                            </p>
+
                             <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-900">
                                 Get in Touch
                             </h2>
+
                             <p className="text-center text-gray-500 text-sm mt-3">
                                 Write to us for personalized travel advice or for information on
                                 group travel and last minute travel, all travel is insured and
