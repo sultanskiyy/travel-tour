@@ -360,9 +360,10 @@ const HomePage = async () => {
             />
           </div>
 
-          <div className="text-white max-w-lg">
+          {/* FAQAT SHU YER O'ZGARDI */}
+          <div className="text-black md:text-white max-w-lg">
 
-            <p className="text-sm text-white/80 mb-3 tracking-wide">
+            <p className="text-sm text-black/70 md:text-white/80 mb-3 tracking-wide">
               Adventure Travel
             </p>
 
@@ -370,7 +371,7 @@ const HomePage = async () => {
               Embrace the Thrill of <br /> the Unknown
             </h2>
 
-            <p className="text-sm text-white/80 mt-5 leading-6">
+            <p className="text-sm text-black/70 md:text-white/80 mt-5 leading-6">
               Are you tired of the typical tourist destinations and looking to step
               out of your comfort zone? Adventure travel may be the perfect solution
               for you! Here are four reasons why you should book an adventure travel
@@ -379,17 +380,17 @@ const HomePage = async () => {
 
             <div className="mt-8 space-y-4">
 
-              <div className="flex items-center gap-3 border-b border-white/20 pb-3">
+              <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Connect with nature</span>
               </div>
 
-              <div className="flex items-center gap-3 border-b border-white/20 pb-3">
+              <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Experience other cultures</span>
               </div>
 
-              <div className="flex items-center gap-3 border-b border-white/20 pb-3">
+              <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Create unforgettable memories</span>
               </div>
