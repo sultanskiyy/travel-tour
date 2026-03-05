@@ -57,9 +57,9 @@ const HomePage = async () => {
                 </div>
               </div>
 
-              <button className="bg-emerald-500 cursor-pointer hover:bg-emerald-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
+              <Link href="./search/page.tsx" className="bg-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
                 SEARCH
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@ const HomePage = async () => {
             </h2>
 
             <p className="mt-5 text-sm text-gray-500 leading-6">
-              Whether you&apos;re looking for a romantic getaway, a family-friendly
+              Whether you are looking for a romantic getaway, a family-friendly
               adventure, or a solo journey to explore the world, a travel agency can
               provide you with a custom-tailored itinerary that exceeds your expectations.
             </p>
@@ -183,11 +183,12 @@ const HomePage = async () => {
                       <div className="h-px w-full bg-gray-200" />
 
                       <div className="mt-4 flex items-end justify-between">
-                        <button
+                        <Link
+                          href={`/single`}
                           className={`px-5 cursor-pointer py-2 rounded-md text-white text-sm font-semibold ${accentBtn}`}
                         >
                           Details
-                        </button>
+                        </Link>
 
                         <div className="text-right leading-none">
                           <p className="text-xs text-gray-400 mb-2">From</p>
@@ -261,9 +262,9 @@ const HomePage = async () => {
                 </div>
               </div>
 
-              <button className="bg-orange-500 cursor-pointer hover:bg-orange-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
+              <Link href="/search" className="bg-orange-500 flex items-center justify-center cursor-pointer hover:bg-orange-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
                 SEARCH
-              </button>
+              </Link>
 
             </div>
           </div>
@@ -347,7 +348,6 @@ const HomePage = async () => {
         </Container>
       </section>
 
-
       <section className="py-24 bg-gradient-to-r from-white via-gray-300 to-black/75">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
@@ -405,22 +405,25 @@ const HomePage = async () => {
         </div>
       </section>
 
-
-
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 text-center">
 
-          {/* TITLE */}
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-12">
             Travel Itineraries
           </h2>
 
-          {/* MAIN IMAGE */}
-          <div className="relative w-full h-[420px] md:h-[500px] rounded-xl overflow-hidden shadow-lg">
-            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/v1EelA5RgW4?si=ZsmWuHFCk-R5mkGT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-          </div>
+          <div className="relative w-full h-105 md:h-125 rounded-xl overflow-hidden shadow-lg">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/v1EelA5RgW4?si=ZsmWuHFCk-R5mkGT"
+              title="YouTube video player"
+              frameBorder={0}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />          </div>
 
-          {/* PARTNER LOGOS */}
           <div className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-10 items-center opacity-70">
 
             <div className="flex justify-center grayscale hover:grayscale-0 transition">

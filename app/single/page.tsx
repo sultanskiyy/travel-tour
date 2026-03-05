@@ -1,5 +1,7 @@
-import Image from "next/image";
-import { useState } from "react";
+"use client"
+
+import Image from "next/image"
+import { useState } from "react"
 
 const tourData = {
     title: "Chiang Mai",
@@ -65,28 +67,28 @@ const tourData = {
             img: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=80",
         },
     ],
-};
+}
 
 export default function TourPage() {
-    const [adults, setAdults] = useState(1);
-    const [children, setChildren] = useState(0);
-    const [healthIns, setHealthIns] = useState(false);
-    const [medicalIns, setMedicalIns] = useState(false); 
-    const [openDay, setOpenDay] = useState<number | null>(null);
+    const [adults, setAdults] = useState(1)
+    const [children, setChildren] = useState(0)
+    const [healthIns, setHealthIns] = useState(false)
+    const [medicalIns, setMedicalIns] = useState(false)
+    const [openDay, setOpenDay] = useState<number | null>(null)
 
-    const total =
-        tourData.price * adults +
-        (healthIns ? 25 : 0) +
-        (medicalIns ? 45 : 0);
+    const total = tourData.price * adults + (healthIns ? 25 : 0) + (medicalIns ? 45 : 0)
 
     return (
         <div className="bg-white font-sans text-gray-800">
             {/* Hero Slider */}
             <div className="relative w-full h-64 md:h-96 overflow-hidden">
+                {/* ✅ FIX: Next/Image needs fill or width/height */}
                 <Image
                     src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&q=80"
                     alt="hero"
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    priority
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-20" />
             </div>
@@ -109,9 +111,7 @@ export default function TourPage() {
                             <span className="text-xl">{item.icon}</span>
                             <div>
                                 <div className="font-semibold text-gray-800">{item.label}</div>
-                                {item.sub !== "" && (
-                                    <div className="text-gray-400 text-xs">{item.sub}</div>
-                                )}
+                                {item.sub !== "" && <div className="text-gray-400 text-xs">{item.sub}</div>}
                             </div>
                         </div>
                     ))}
@@ -133,7 +133,8 @@ export default function TourPage() {
                     <section className="mb-10">
                         <h2 className="text-xl font-bold mb-4 text-gray-900">Included / Excluded</h2>
                         <p className="text-gray-500 text-sm mb-5">
-                            To help you plan your trip, we have put together a list of whats included and whats not included in your tour package.
+                            To help you plan your trip, we have put together a list of whats included and whats not included in your
+                            tour package.
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
@@ -157,7 +158,8 @@ export default function TourPage() {
                     <section className="mb-10">
                         <h2 className="text-xl font-bold mb-2 text-gray-900">Tour Map</h2>
                         <p className="text-gray-500 text-sm mb-4">
-                            This comprehensive map is designed to guide you through an exciting journey filled with remarkable destinations and captivating experiences.
+                            This comprehensive map is designed to guide you through an exciting journey filled with remarkable
+                            destinations and captivating experiences.
                         </p>
                         <div className="rounded-xl overflow-hidden border border-gray-200 h-56">
                             <iframe
@@ -173,7 +175,8 @@ export default function TourPage() {
                     <section className="mb-10">
                         <h2 className="text-xl font-bold mb-2 text-gray-900">Itinerary</h2>
                         <p className="text-gray-500 text-sm mb-5">
-                            We have carefully planned out each day to give you the best possible experience from exploring historic landmarks to tasting delicious local cuisine.
+                            We have carefully planned out each day to give you the best possible experience from exploring historic
+                            landmarks to tasting delicious local cuisine.
                         </p>
                         <div className="space-y-2">
                             {tourData.itinerary.map((item) => (
@@ -198,10 +201,17 @@ export default function TourPage() {
                         <p className="text-gray-500 text-sm mb-4">
                             Each image tells a unique story, inviting us into a world of emotion, beauty, and complexity.
                         </p>
+
+                        {/* ✅ FIX: each Image needs fill + relative wrapper */}
                         <div className="grid grid-cols-3 gap-2">
                             {tourData.gallery.map((src, i) => (
-                                <div key={i} className="aspect-square rounded-xl overflow-hidden">
-                                    <Image src={src} alt={`gallery-${i}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                                <div key={i} className="relative aspect-square rounded-xl overflow-hidden">
+                                    <Image
+                                        src={src}
+                                        alt={`gallery-${i}`}
+                                        fill
+                                        className="object-cover hover:scale-105 transition-transform duration-300"
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -217,13 +227,21 @@ export default function TourPage() {
                         </p>
 
                         <div className="flex gap-2 mb-5">
-                            <button className="flex-1 bg-teal-500 text-white text-sm py-2 rounded-lg font-semibold hover:bg-teal-600 transition">Booking Now</button>
-                            <button className="flex-1 border border-teal-500 text-teal-500 text-sm py-2 rounded-lg font-semibold hover:bg-teal-50 transition">Inquiry Form</button>
+                            <button className="flex-1 bg-teal-500 text-white text-sm py-2 rounded-lg font-semibold hover:bg-teal-600 transition">
+                                Booking Now
+                            </button>
+                            <button className="flex-1 border border-teal-500 text-teal-500 text-sm py-2 rounded-lg font-semibold hover:bg-teal-50 transition">
+                                Inquiry Form
+                            </button>
                         </div>
 
                         <div className="mb-4">
                             <label className="text-xs font-semibold text-gray-600 block mb-1">Date</label>
-                            <input type="date" defaultValue="2024-03-12" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400" />
+                            <input
+                                type="date"
+                                defaultValue="2024-03-12"
+                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-teal-400"
+                            />
                         </div>
 
                         <div className="flex items-center justify-between mb-3">
@@ -232,9 +250,19 @@ export default function TourPage() {
                                 <p className="text-xs text-gray-400">Over 18 ( $ 490 )</p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button onClick={() => setAdults(Math.max(1, adults - 1))} className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none">−</button>
+                                <button
+                                    onClick={() => setAdults(Math.max(1, adults - 1))}
+                                    className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none"
+                                >
+                                    −
+                                </button>
                                 <span className="w-6 text-center text-sm font-bold">{adults}</span>
-                                <button onClick={() => setAdults(adults + 1)} className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none">+</button>
+                                <button
+                                    onClick={() => setAdults(adults + 1)}
+                                    className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none"
+                                >
+                                    +
+                                </button>
                             </div>
                         </div>
 
@@ -244,20 +272,40 @@ export default function TourPage() {
                                 <p className="text-xs text-gray-400">Under 18 ( $ 200 )</p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <button onClick={() => setChildren(Math.max(0, children - 1))} className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none">−</button>
+                                <button
+                                    onClick={() => setChildren(Math.max(0, children - 1))}
+                                    className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none"
+                                >
+                                    −
+                                </button>
                                 <span className="w-6 text-center text-sm font-bold">{children}</span>
-                                <button onClick={() => setChildren(children + 1)} className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none">+</button>
+                                <button
+                                    onClick={() => setChildren(children + 1)}
+                                    className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none"
+                                >
+                                    +
+                                </button>
                             </div>
                         </div>
 
                         <div className="mb-5">
                             <p className="text-xs font-semibold text-gray-600 mb-2">Extra Services</p>
                             <label className="flex items-center gap-2 text-sm text-gray-600 mb-2 cursor-pointer">
-                                <input type="checkbox" checked={healthIns} onChange={e => setHealthIns(e.target.checked)} className="accent-teal-500" />
+                                <input
+                                    type="checkbox"
+                                    checked={healthIns}
+                                    onChange={(e) => setHealthIns(e.target.checked)}
+                                    className="accent-teal-500"
+                                />
                                 Health Insurance ( $ 25 )
                             </label>
                             <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                                <input type="checkbox" checked={medicalIns} onChange={e => setMedicalIns(e.target.checked)} className="accent-teal-500" />
+                                <input
+                                    type="checkbox"
+                                    checked={medicalIns}
+                                    onChange={(e) => setMedicalIns(e.target.checked)}
+                                    className="accent-teal-500"
+                                />
                                 Medical Insurance ( $ 45 )
                             </label>
                         </div>
@@ -274,12 +322,16 @@ export default function TourPage() {
                 <div className="max-w-5xl mx-auto">
                     <p className="text-center text-xs text-teal-500 font-semibold tracking-widest uppercase mb-1">CHECK IT</p>
                     <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Packages</h2>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {tourData.packages.map((pkg, i) => (
                             <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
                                 <div className="relative h-44">
-                                    <Image src={pkg.img} alt={pkg.name} className="w-full h-full object-cover" />
-                                    <span className="absolute top-3 right-3 bg-teal-500 text-white text-xs px-2 py-1 rounded-full">{pkg.weeks} Week{pkg.weeks > 1 ? "s" : ""}</span>
+                                    {/* ✅ FIX: Next/Image needs fill or width/height */}
+                                    <Image src={pkg.img} alt={pkg.name} fill className="object-cover" />
+                                    <span className="absolute top-3 right-3 bg-teal-500 text-white text-xs px-2 py-1 rounded-full">
+                                        {pkg.weeks} Week{pkg.weeks > 1 ? "s" : ""}
+                                    </span>
                                 </div>
                                 <div className="p-5">
                                     <h3 className="font-bold text-gray-900 text-lg">{pkg.name}</h3>
@@ -290,14 +342,20 @@ export default function TourPage() {
                                             <span className="text-xs text-gray-400">From</span>
                                             <p className="text-xl font-bold text-gray-900">$ {pkg.price}</p>
                                         </div>
-                                        <button className="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">Details</button>
+                                        <button className="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
+                                            Details
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
+
+                    {/* NOTE:
+              If Unsplash images still don't load, add images.remotePatterns for images.unsplash.com in next.config.js
+          */}
                 </div>
             </div>
         </div>
-    );
+    )
 }
