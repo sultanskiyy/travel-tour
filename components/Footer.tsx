@@ -4,7 +4,7 @@ export default function Footer() {
     return (
         <footer>
             <section
-                className="relative w-full min-h-95 md:h-95 bg-cover bg-[position:70%_center] md:bg-center"
+                className="relative w-full min-h-95 md:h-95 bg-cover bg-position-[70%_center] md:bg-center"
                 style={{ backgroundImage: "url('/overlay.png')" }}
             >
                 <div className="absolute inset-0 bg-black/65" />

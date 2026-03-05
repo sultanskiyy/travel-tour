@@ -1,16 +1,25 @@
-import getData from "@/service/api"
-import type { CategoryType } from "@/types/CategoryType"
-import type { TourCardType } from "@/types/TourCardType"
-import { useTours } from "@/hooks/useTours"
+"use client";
 
-import Container from "@/components/Container"
-import Link from "next/link"
-import Image from "next/image"
-import { FaSearch, FaMapMarkerAlt, FaGlobe, FaCheck } from "react-icons/fa"
+import React, { useState, useEffect } from "react";
+import getData from "@/service/api";
+import type { CategoryType } from "@/types/CategoryType";
+import type { TourCardType } from "@/types/TourCardType";
+import { useTours } from "@/hooks/useTours";
 
-const HomePage = async () => {
-  const categories: CategoryType[] = await getData({ url: "category" })
-  const tours: TourCardType[] = useTours()
+import Container from "@/components/Container";
+import Link from "next/link";
+import Image from "next/image";
+import { FaSearch, FaMapMarkerAlt, FaGlobe, FaCheck } from "react-icons/fa";
+
+export default function HomePage() {
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const tours: TourCardType[] = useTours();
+
+  useEffect(() => {
+    getData({ url: "category" }).then((data) => {
+      setCategories(data as CategoryType[]);
+    });
+  }, []);
 
   return (
     <>
@@ -52,12 +61,17 @@ const HomePage = async () => {
               <div className="flex cursor-pointer items-center gap-3">
                 <FaGlobe className="text-emerald-500 text-lg" />
                 <div>
-                  <p className="text-xs font-semibold text-gray-700">Typologies</p>
+                  <p className="text-xs font-semibold text-gray-700">
+                    Typologies
+                  </p>
                   <p className="text-xs text-gray-400">All Typologies</p>
                 </div>
               </div>
 
-              <Link href="./search/page.tsx" className="bg-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
+              <Link
+                href="./search/page"
+                className="bg-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 text-white text-sm font-semibold px-6 py-3 rounded-md"
+              >
                 SEARCH
               </Link>
             </div>
@@ -78,8 +92,9 @@ const HomePage = async () => {
 
             <p className="mt-5 text-sm text-gray-500 leading-6">
               Whether you are looking for a romantic getaway, a family-friendly
-              adventure, or a solo journey to explore the world, a travel agency can
-              provide you with a custom-tailored itinerary that exceeds your expectations.
+              adventure, or a solo journey to explore the world, a travel agency
+              can provide you with a custom-tailored itinerary that exceeds your
+              expectations.
             </p>
 
             <button className="mt-6 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-6 py-3 rounded-md transition">
@@ -95,8 +110,9 @@ const HomePage = async () => {
                 return (
                   typeof el.icon === "string" &&
                   el.icon !== "string" &&
-                  (el.icon.startsWith("http://") || el.icon.startsWith("https://"))
-                )
+                  (el.icon.startsWith("http://") ||
+                    el.icon.startsWith("https://"))
+                );
               })
               .map((el: CategoryType) => (
                 <Link
@@ -128,14 +144,14 @@ const HomePage = async () => {
                   ? "bg-emerald-500 hover:bg-emerald-600"
                   : tour.accent === "cyan"
                     ? "bg-cyan-500 hover:bg-cyan-600"
-                    : "bg-violet-500 hover:bg-violet-600"
+                    : "bg-violet-500 hover:bg-violet-600";
 
               const accentDot =
                 tour.accent === "green"
                   ? "bg-emerald-500"
                   : tour.accent === "cyan"
                     ? "bg-cyan-500"
-                    : "bg-violet-500"
+                    : "bg-violet-500";
 
               return (
                 <div
@@ -209,7 +225,7 @@ const HomePage = async () => {
                     </div>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </Container>
@@ -225,15 +241,14 @@ const HomePage = async () => {
             </h2>
 
             <p className="text-gray-500 text-sm mt-4 leading-6">
-              Looking for your dream vacation destination but don’t know where to
-              start? With the help <br /> of experienced and knowledgeable travel agents,
-              you can plan the trip of a lifetime with ease.
+              Looking for your dream vacation destination but don’t know where
+              to start? With the help <br /> of experienced and knowledgeable
+              travel agents, you can plan the trip of a lifetime with ease.
             </p>
           </div>
 
           <div className="mt-10 max-w-4xl mx-auto bg-white rounded-xl shadow-md p-5">
             <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-6">
-
               <div className="flex items-center gap-3 cursor-pointer">
                 <FaSearch className="text-orange-500 text-lg" />
                 <div>
@@ -262,10 +277,12 @@ const HomePage = async () => {
                 </div>
               </div>
 
-              <Link href="./search/page" className="bg-orange-500 flex items-center justify-center cursor-pointer hover:bg-orange-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
+              <Link
+                href="./search/page"
+                className="bg-orange-500 flex items-center justify-center cursor-pointer hover:bg-orange-600 text-white text-sm font-semibold px-6 py-3 rounded-md"
+              >
                 SEARCH
               </Link>
-
             </div>
           </div>
         </Container>
@@ -282,11 +299,11 @@ const HomePage = async () => {
               </h2>
 
               <p className="text-gray-500 text-sm mt-4 leading-6">
-                We have compiled a list of top destinations across the globe, scoured
-                the world for the most alluring and fascinating places to visit. From
-                the beautiful beaches of the Caribbean to the majestic mountains of
-                Europe and the vibrant cities of Asia, our destination list has
-                something for everyone.
+                We have compiled a list of top destinations across the globe,
+                scoured the world for the most alluring and fascinating places
+                to visit. From the beautiful beaches of the Caribbean to the
+                majestic mountains of Europe and the vibrant cities of Asia, our
+                destination list has something for everyone.
               </p>
             </div>
 
@@ -319,7 +336,7 @@ const HomePage = async () => {
               <Link
                 key={item.name}
                 href={`/destination/${item.name.toLowerCase()}`}
-                className="group relative h-[360px] rounded-2xl overflow-hidden cursor-pointer
+                className="group relative h-90 rounded-2xl overflow-hidden cursor-pointer
                      shadow-md hover:shadow-2xl transition-all duration-300"
               >
                 <Image
@@ -330,15 +347,14 @@ const HomePage = async () => {
                   sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 260px"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/80 transition" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/80 transition" />
 
-                {/* TEXT (rasmdagidek pastda center) */}
                 <div className="absolute bottom-8 left-0 right-0 px-4 text-center text-white">
                   <h3 className="text-2xl font-extrabold drop-shadow">
                     {item.name}
                   </h3>
 
-                  <p className="mt-3 text-sm leading-5 opacity-95 drop-shadow max-w-[220px] mx-auto">
+                  <p className="mt-3 text-sm leading-5 opacity-95 drop-shadow max-w-55 mx-auto">
                     {item.desc}
                   </p>
                 </div>
@@ -348,10 +364,9 @@ const HomePage = async () => {
         </Container>
       </section>
 
-      <section className="py-24 bg-gradient-to-r from-white via-gray-300 to-black/75">
+      <section className="py-24 bg-linear-to-r from-white via-gray-300 to-black/75">
         <div className="max-w-330 mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-
-          <div className="relative w-full max-w-md mx-auto lg:mx-0 h-[420px] rounded-lg overflow-hidden shadow-xl">
+          <div className="relative w-full max-w-md mx-auto lg:mx-0 h-105 rounded-lg overflow-hidden shadow-xl">
             <Image
               src="/ormon.png"
               alt="Adventure Travel"
@@ -361,7 +376,6 @@ const HomePage = async () => {
           </div>
 
           <div className="text-black md:text-white max-w-lg">
-
             <p className="text-sm text-black/70 md:text-white/80 mb-3 tracking-wide">
               Adventure Travel
             </p>
@@ -371,14 +385,13 @@ const HomePage = async () => {
             </h2>
 
             <p className="text-sm text-black/70 md:text-white/80 mt-5 leading-6">
-              Are you tired of the typical tourist destinations and looking to step
-              out of your comfort zone? Adventure travel may be the perfect solution
-              for you! Here are four reasons why you should book an adventure travel
-              experience.
+              Are you tired of the typical tourist destinations and looking to
+              step out of your comfort zone? Adventure travel may be the perfect
+              solution for you! Here are four reasons why you should book an
+              adventure travel experience.
             </p>
 
             <div className="mt-8 space-y-4">
-
               <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Connect with nature</span>
@@ -393,21 +406,17 @@ const HomePage = async () => {
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Create unforgettable memories</span>
               </div>
-
             </div>
 
             <button className="mt-8 bg-emerald-500 hover:bg-emerald-600 transition text-white text-sm font-semibold px-6 py-3 rounded-md">
               All Services
             </button>
-
           </div>
-
         </div>
       </section>
 
       <section className="py-20 bg-white">
         <div className="max-w-330 mx-auto px-6 text-center">
-
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-12">
             Travel Itineraries
           </h2>
@@ -422,61 +431,32 @@ const HomePage = async () => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
-            />          </div>
+            />{" "}
+          </div>
 
           <div className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-10 items-center opacity-70">
-
             <div className="flex justify-center grayscale hover:grayscale-0 transition">
-              <Image
-                src="/logo1.png"
-                alt="partner"
-                width={150}
-                height={60}
-              />
+              <Image src="/logo1.png" alt="partner" width={150} height={60} />
             </div>
 
             <div className="flex justify-center grayscale hover:grayscale-0 transition">
-              <Image
-                src="/logo2.png"
-                alt="partner"
-                width={150}
-                height={60}
-              />
+              <Image src="/logo2.png" alt="partner" width={150} height={60} />
             </div>
 
             <div className="flex justify-center grayscale hover:grayscale-0 transition">
-              <Image
-                src="/logo3.png"
-                alt="partner"
-                width={150}
-                height={60}
-              />
+              <Image src="/logo3.png" alt="partner" width={150} height={60} />
             </div>
 
             <div className="flex justify-center grayscale hover:grayscale-0 transition">
-              <Image
-                src="/logo4.png"
-                alt="partner"
-                width={150}
-                height={60}
-              />
+              <Image src="/logo4.png" alt="partner" width={150} height={60} />
             </div>
 
             <div className="">
-              <Image
-                src="/logo5.png"
-                alt="partner"
-                width={150}
-                height={40}
-              />
+              <Image src="/logo5.png" alt="partner" width={150} height={40} />
             </div>
-
           </div>
-
         </div>
       </section>
     </>
-  )
+  );
 }
-
-export default HomePage
