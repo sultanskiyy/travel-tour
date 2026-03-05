@@ -63,12 +63,11 @@ export default function Header() {
                         </Link>
                         <span className="text-emerald-400">:</span>
 
-                        <Link href="/contact" className="hover:text-emerald-500 transition">
+                        <Link href="/contactus" className="hover:text-emerald-500 transition">
                             Contact Us
                         </Link>
                     </nav>
 
-                    {/* RIGHT SIDE */}
                     <div className="flex items-center justify-end gap-3 sm:gap-4">
                         <button
                             onClick={() => setOpen((v) => !v)}
@@ -86,7 +85,6 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* MOBILE MENU (slide) */}
             <div
                 className={`md:hidden overflow-hidden border-t bg-white transition-[max-height] duration-300 ${open ? "max-h-96" : "max-h-0"
                     }`}

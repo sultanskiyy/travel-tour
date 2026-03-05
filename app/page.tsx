@@ -262,7 +262,7 @@ const HomePage = async () => {
                 </div>
               </div>
 
-              <Link href="/search" className="bg-orange-500 flex items-center justify-center cursor-pointer hover:bg-orange-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
+              <Link href="./search/page" className="bg-orange-500 flex items-center justify-center cursor-pointer hover:bg-orange-600 text-white text-sm font-semibold px-6 py-3 rounded-md">
                 SEARCH
               </Link>
 
@@ -272,7 +272,7 @@ const HomePage = async () => {
       </section>
 
       <section className="bg-gray-100 py-24">
-        <Container className="px-9">
+        <Container className="px-5">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             <div className="max-w-xl">
               <p className="text-emerald-500 text-sm mb-3">Next Adventure</p>
@@ -349,7 +349,7 @@ const HomePage = async () => {
       </section>
 
       <section className="py-24 bg-gradient-to-r from-white via-gray-300 to-black/75">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+        <div className="max-w-330 mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
 
           <div className="relative w-full max-w-md mx-auto lg:mx-0 h-[420px] rounded-lg overflow-hidden shadow-xl">
             <Image
@@ -360,7 +360,6 @@ const HomePage = async () => {
             />
           </div>
 
-          {/* FAQAT SHU YER O'ZGARDI */}
           <div className="text-black md:text-white max-w-lg">
 
             <p className="text-sm text-black/70 md:text-white/80 mb-3 tracking-wide">
@@ -407,7 +406,7 @@ const HomePage = async () => {
       </section>
 
       <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-330 mx-auto px-6 text-center">
 
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-12">
             Travel Itineraries
