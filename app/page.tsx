@@ -124,8 +124,7 @@ const HomePage = async () => {
           </div>
         </Container>
 
-        {/* TOURS (useTours dan keladi) */}
-        <Container className="mt-14">
+        <Container className="mt-14 px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {tours.map((tour) => {
               const accentBtn =
@@ -147,7 +146,6 @@ const HomePage = async () => {
                   key={tour.id}
                   className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
                 >
-                  {/* image */}
                   <div className="relative w-full h-50">
                     <Image
                       src={tour.image}
@@ -164,9 +162,7 @@ const HomePage = async () => {
                     )}
                   </div>
 
-                  {/* body */}
                   <div className="p-6">
-                    {/* days */}
                     <div className="flex items-center gap-2 text-xs text-gray-400">
                       <span className={`w-2 h-2 rounded-full ${accentDot}`} />
                       <span>{tour.days}</span>
@@ -215,7 +211,6 @@ const HomePage = async () => {
                         </div>
                       </div>
                     </div>
-                    {/* bottom end */}
                   </div>
                 </div>
               )
