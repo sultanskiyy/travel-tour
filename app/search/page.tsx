@@ -2,7 +2,10 @@ import FilterSearch from '@/components/FilterSearch'
 import Searchsweger from '@/components/Searchsweger'
 import TourCardsSarch from '@/components/TourCardsSarch'
 
+
 const page = async() => {
+
+  
   return (
     <div>
       <Searchsweger/>
