@@ -199,14 +199,12 @@ export default function TourPage() {
                         </div>
                     </section>
 
-                    {/* Gallery */}
                     <section className="mb-10">
                         <h2 className="text-xl font-bold mb-2 text-gray-900">Gallery</h2>
                         <p className="text-gray-500 text-sm mb-4">
                             Each image tells a unique story, inviting us into a world of emotion, beauty, and complexity.
                         </p>
 
-                        {/* ✅ FIX: each Image needs fill + relative wrapper */}
                         <div className="grid grid-cols-3 gap-2">
                             {tourData.gallery.map((src, i) => (
                                 <div key={i} className="relative aspect-square rounded-xl overflow-hidden">
@@ -321,7 +319,6 @@ export default function TourPage() {
                 </div>
             </div>
 
-            {/* Packages */}
             <div className="bg-gray-50 py-14 px-4">
                 <div className="max-w-5xl mx-auto">
                     <p className="text-center text-xs text-teal-500 font-semibold tracking-widest uppercase mb-1">CHECK IT</p>
@@ -331,7 +328,6 @@ export default function TourPage() {
                         {tourData.packages.map((pkg, i) => (
                             <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
                                 <div className="relative h-44">
-                                    {/* ✅ FIX: Next/Image needs fill or width/height */}
                                     <Image src={pkg.img} alt={pkg.name} fill className="object-cover" />
                                     <span className="absolute top-3 right-3 bg-teal-500 text-white text-xs px-2 py-1 rounded-full">
                                         {pkg.weeks} Week{pkg.weeks > 1 ? "s" : ""}
@@ -355,9 +351,6 @@ export default function TourPage() {
                         ))}
                     </div>
 
-                    {/* NOTE:
-              If Unsplash images still don't load, add images.remotePatterns for images.unsplash.com in next.config.js
-          */}
                 </div>
             </div>
         </div>

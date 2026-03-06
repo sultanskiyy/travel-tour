@@ -20,9 +20,7 @@ export default function Header() {
     return (
         <header className="w-full fixed top-0 left-0 z-50 bg-white border-b">
             <div className="max-w-330 mx-auto px-4 sm:px-6">
-                {/* Mobile: flex justify-between | Desktop: grid 3 col */}
                 <div className="flex items-center justify-between md:grid md:grid-cols-3 md:items-center py-4">
-                    {/* LOGO */}
                     <div className="flex items-center">
                         <Link href="/" className="inline-flex items-center">
                             <Image
@@ -31,12 +29,11 @@ export default function Header() {
                                 width={140}
                                 height={40}
                                 priority
-                                className="h-auto w-[120px] sm:w-[140px]"
+                                className="h-auto w-30 sm:w-35"
                             />
                         </Link>
                     </div>
 
-                    {/* NAVIGATION */}
                     <nav className="hidden md:flex items-center justify-center gap-6 text-sm text-gray-600 whitespace-nowrap">
                         <Link href="/" className="hover:text-emerald-500 transition">
                             Home
