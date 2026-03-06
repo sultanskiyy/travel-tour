@@ -2,6 +2,10 @@
 
 import Image from "next/image"
 import { useState } from "react"
+import { CiMapPin } from "react-icons/ci"
+import { FaMapSigns } from "react-icons/fa"
+import { GoClock } from "react-icons/go"
+import { MdOutlineMan } from "react-icons/md"
 
 const tourData = {
     title: "Chiang Mai",
@@ -98,14 +102,14 @@ export default function TourPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">{tourData.title}</h1>
                     <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                        <span>📍</span> {tourData.location}
+                        <span><CiMapPin className="text-white bg-black rounded-2xl h-5 w-5 p-0.5 " /></span> {tourData.location}
                     </p>
                 </div>
                 <div className="flex gap-6 ml-auto flex-wrap">
                     {[
-                        { icon: "🕐", label: tourData.duration, sub: "" },
-                        { icon: "🧭", label: tourData.difficulty, sub: "Difficulty" },
-                        { icon: "👤", label: `Min Age`, sub: tourData.minAge },
+                        { icon: <GoClock />, label: tourData.duration, sub: "" },
+                        { icon: <FaMapSigns />, label: tourData.difficulty, sub: "Difficulty" },
+                        { icon: <MdOutlineMan />, label: `Min Age`, sub: tourData.minAge },
                     ].map((item, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm">
                             <span className="text-xl">{item.icon}</span>
@@ -335,7 +339,7 @@ export default function TourPage() {
                                 </div>
                                 <div className="p-5">
                                     <h3 className="font-bold text-gray-900 text-lg">{pkg.name}</h3>
-                                    <p className="text-xs text-gray-400 flex items-center gap-1 mb-3">📍 {pkg.location}</p>
+                                    <p className="text-xs text-gray-400 flex items-center gap-1 mb-3"><CiMapPin className="text-white bg-black rounded-2xl h-5 w-5 p-0.5 " /> {pkg.location}</p>
                                     <p className="text-sm text-gray-500 mb-4 leading-relaxed">{pkg.desc}</p>
                                     <div className="flex items-center justify-between">
                                         <div>
