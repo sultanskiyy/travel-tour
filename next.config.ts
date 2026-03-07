@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       "i.ytimg.com",
       "adventourss.com",
       "images.unsplash.com"
+     
     ]
   }
 };

@@ -110,6 +110,7 @@ export default function HomePage() {
                 return (
                   typeof el.icon === "string" &&
                   el.icon !== "string" &&
+                  el.icon &&
                   (el.icon.startsWith("http://") ||
                     el.icon.startsWith("https://"))
                 );
@@ -121,8 +122,8 @@ export default function HomePage() {
                   className="relative w-full max-w-90 h-30 rounded-xl overflow-hidden flex items-center justify-center"
                 >
                   <Image
-                    fill
-                    src={el.icon}
+                      fill
+                    src={el.icon as string}
                     alt={el.name_uz}
                     className="object-cover"
                     sizes="(max-width: 768px) 90vw, 360px"
