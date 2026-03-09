@@ -200,7 +200,7 @@ export default function HomePage() {
 
                       <div className="mt-4 flex items-end justify-between">
                         <Link
-                          href={`/single`}
+                          href={`/single/${tour.id}`}
                           className={`px-5 cursor-pointer py-2 rounded-md text-white text-sm font-semibold ${accentBtn}`}
                         >
                           Details
