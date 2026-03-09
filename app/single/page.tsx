@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
+import Container from "@/components/Container"
 import { CiMapPin } from "react-icons/ci"
 import { FaMapSigns } from "react-icons/fa"
 import { GoClock } from "react-icons/go"
@@ -131,32 +132,35 @@ export default function TourPage() {
             </div>
 
             {/* Tour Meta */}
-            <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap items-center gap-6 border-b border-gray-200">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">{tourData.title}</h1>
-                    <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                        <span><CiMapPin className="text-white bg-black rounded-2xl h-5 w-5 p-0.5 " /></span> {tourData.location}
-                    </p>
-                </div>
-                <div className="flex gap-6 ml-auto flex-wrap">
-                    {[
-                        { icon: <GoClock />, label: tourData.duration, sub: "" },
-                        { icon: <FaMapSigns />, label: tourData.difficulty, sub: "Difficulty" },
-                        { icon: <MdOutlineMan />, label: `Min Age`, sub: tourData.minAge },
-                    ].map((item, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm">
-                            <span className="text-xl">{item.icon}</span>
-                            <div>
-                                <div className="font-semibold text-gray-800">{item.label}</div>
-                                {item.sub !== "" && <div className="text-gray-400 text-xs">{item.sub}</div>}
+            <Container className="px-4 sm:px-6 py-6">
+                <div className="flex flex-wrap items-center gap-6 border-b border-gray-200">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">{tourData.title}</h1>
+                        <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                            <span><CiMapPin className="text-white bg-black rounded-2xl h-5 w-5 p-0.5 " /></span> {tourData.location}
+                        </p>
+                    </div>
+                    <div className="flex gap-6 ml-auto flex-wrap">
+                        {[
+                            { icon: <GoClock />, label: tourData.duration, sub: "" },
+                            { icon: <FaMapSigns />, label: tourData.difficulty, sub: "Difficulty" },
+                            { icon: <MdOutlineMan />, label: `Min Age`, sub: tourData.minAge },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-center gap-2 text-sm">
+                                <span className="text-xl">{item.icon}</span>
+                                <div>
+                                    <div className="font-semibold text-gray-800">{item.label}</div>
+                                    {item.sub !== "" && <div className="text-gray-400 text-xs">{item.sub}</div>}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </Container>
 
             {/* Main Content */}
-            <div className="max-w-5xl mx-auto px-4 py-10 flex flex-col lg:flex-row gap-10">
+            <Container className="px-4 sm:px-6 py-10">
+                <div className="flex flex-col lg:flex-row gap-10">
                 {/* Left */}
                 <div className="flex-1 min-w-0">
                     {/* Enjoy */}
@@ -350,7 +354,8 @@ export default function TourPage() {
                         </button>
                     </div>
                 </div>
-            </div>
+                </div>
+            </Container>
 
         </div>
     )

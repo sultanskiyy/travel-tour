@@ -50,7 +50,7 @@ export default function Header() {
                         </Link>
                         <span className="text-emerald-400">:</span>
 
-                        <Link href="/shop" className="hover:text-emerald-500 transition">
+                        <Link href="/filter" className="hover:text-emerald-500 transition">
                             Shop
                         </Link>
                         <span className="text-emerald-400">:</span>
