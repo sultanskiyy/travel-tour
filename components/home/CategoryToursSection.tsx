@@ -13,7 +13,7 @@ const CategoryToursSection = ({ categories = [] }: Props) => {
       <Container className="px-9">
         <div className="max-w-130 pb-10">
           <p className="text-emerald-500 font-medium text-sm mb-2">
-            Dream Vacation Destination
+            Dream Vacation Destinations
           </p>
 
           <h2 className="text-4xl md:text-5xl font-extrabold leading-tight text-black">
