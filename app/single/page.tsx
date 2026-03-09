@@ -122,11 +122,12 @@ export default function TourPage() {
             <div className="relative w-full h-64 md:h-96 overflow-hidden">
                 {/* ✅ FIX: Next/Image needs fill or width/height */}
                 <Image
-                    src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&q=80"
+                    src={tourData.gallery[0] || "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&q=80"}
                     alt="hero"
                     fill
                     className="object-cover"
                     priority
+                    unoptimized
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-20" />
             </div>
@@ -250,6 +251,7 @@ export default function TourPage() {
                                         alt={`gallery-${i}`}
                                         fill
                                         className="object-cover hover:scale-105 transition-transform duration-300"
+                                        unoptimized
                                     />
                                 </div>
                             ))}
