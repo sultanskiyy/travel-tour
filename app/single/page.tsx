@@ -1,35 +1,50 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+import { CiMapPin } from "react-icons/ci"
+import { FaMapSigns } from "react-icons/fa"
+import { GoClock } from "react-icons/go"
+import { MdOutlineMan } from "react-icons/md"
 
-const tourData = {
-    title: "Chiang Mai",
-    location: "Thailand",
+interface Package {
+    id: string
+    title: string
+    title_uz?: string
+    title_ru?: string
+    description: string
+    duration_days: number
+    total_price: number
+    original_price: number
+    departure_city: string
+    cover_image: string
+    discount_pct: number
+}
+
+const defaultTourData = {
+    title: "Tour Package",
+    location: "Destination",
     duration: "1 Week",
     difficulty: "Easy",
     minAge: 0,
     price: 490,
-    description1:
-        "Are you looking for an adventure of a lifetime? Join us on an unforgettable journey through some of the world's most stunning landscapes and cultural destinations. Our expertly curated tours take you to incredible destinations, from the rugged mountains of Patagonia to the vibrant cities of Asia. Our itineraries are designed to immerse you in the local culture, with opportunities to meet locals, try new foods, and learn about the history and traditions of each destination.",
-    description2:
-        "Our accommodations are carefully selected for comfort and convenience, with options to suit every budget. Whether you prefer luxurious hotels or cozy homestays, we have something for everyone. At every step of the journey, we prioritize sustainability and responsible tourism. We work with local communities to ensure that our tours have a positive impact on the environment and the people we meet along the way.",
+    description1: "Loading...",
+    description2: "",
     included: [
         "Train tickets and Bus transportation",
         "Breakfast, lunch, and dinner",
         "Accommodation at hotel",
-        "Train tickets and Bus transportation",
     ],
     excluded: [
         "Professional tour guide",
         "Transfers between destinations",
         "Entrance fees to museums",
-        "Custom itinerary",
     ],
     itinerary: [
         { day: 1, title: "Arrival and Orientation" },
         { day: 2, title: "City Tour" },
-        { day: 3, title: "Cooking Class" },
+        { day: 3, title: "Main Activity" },
         { day: 4, title: "Nature Hike" },
         { day: 5, title: "Free Day" },
     ],
@@ -37,44 +52,66 @@ const tourData = {
         "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80",
         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
         "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400&q=80",
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
-        "https://images.unsplash.com/photo-1504214208698-ea1916a2195a?w=400&q=80",
-        "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400&q=80",
-    ],
-    packages: [
-        {
-            name: "Athenes",
-            location: "Greece",
-            desc: "Immerse yourself in the history and culture of this ancient city as you explore the stunning Acropolis.",
-            price: 677,
-            weeks: 2,
-            img: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&q=80",
-        },
-        {
-            name: "Azure Coast",
-            location: "France",
-            desc: "Escape to the azure coast and discover a world of breathtaking beauty and tranquility of coastline.",
-            price: 400,
-            weeks: 1,
-            img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
-        },
-        {
-            name: "Bangkok",
-            location: "Thailand",
-            desc: "Majestic culinary and cultural trip to the Thai capital with its wonderful monuments and Buddha statues.",
-            price: 1000,
-            weeks: 3,
-            img: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&q=80",
-        },
     ],
 }
 
 export default function TourPage() {
+    const searchParams = useSearchParams()
+    const packageId = searchParams.get("id")
+    
+    const [tourData, setTourData] = useState(defaultTourData)
+    const [loading, setLoading] = useState(true)
     const [adults, setAdults] = useState(1)
     const [children, setChildren] = useState(0)
     const [healthIns, setHealthIns] = useState(false)
     const [medicalIns, setMedicalIns] = useState(false)
     const [openDay, setOpenDay] = useState<number | null>(null)
+
+    useEffect(() => {
+        if (packageId) {
+            fetch(`https://x8ki-letl-twmt.n7.xano.io/api:qNrTfAaz/package/${packageId}`)
+                .then((res) => res.json())
+                .then((data: Package) => {
+                    setTourData({
+                        title: data.title_uz || data.title,
+                        location: data.departure_city,
+                        duration: `${data.duration_days} Days`,
+                        difficulty: "Easy",
+                        minAge: 0,
+                        price: data.total_price,
+                        description1: data.description,
+                        description2: "",
+                        included: [
+                            "Train tickets and Bus transportation",
+                            "Breakfast, lunch, and dinner",
+                            "Accommodation at hotel",
+                        ],
+                        excluded: [
+                            "Professional tour guide",
+                            "Transfers between destinations",
+                            "Entrance fees to museums",
+                        ],
+                        itinerary: [
+                            { day: 1, title: "Arrival and Orientation" },
+                            { day: 2, title: "City Tour" },
+                            { day: 3, title: "Main Activity" },
+                            { day: 4, title: "Nature Hike" },
+                            { day: 5, title: "Free Day" },
+                        ],
+                        gallery: [data.cover_image],
+                    })
+                    setLoading(false)
+                })
+                .catch((err) => {
+                    console.error("Error fetching package:", err)
+                    setLoading(false)
+                })
+        }
+    }, [packageId])
+
+    if (loading) {
+        return <div className="text-center py-10">Loading...</div>
+    }
 
     const total = tourData.price * adults + (healthIns ? 25 : 0) + (medicalIns ? 45 : 0)
 
@@ -98,14 +135,14 @@ export default function TourPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">{tourData.title}</h1>
                     <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                        <span>📍</span> {tourData.location}
+                        <span><CiMapPin className="text-white bg-black rounded-2xl h-5 w-5 p-0.5 " /></span> {tourData.location}
                     </p>
                 </div>
                 <div className="flex gap-6 ml-auto flex-wrap">
                     {[
-                        { icon: "🕐", label: tourData.duration, sub: "" },
-                        { icon: "🧭", label: tourData.difficulty, sub: "Difficulty" },
-                        { icon: "👤", label: `Min Age`, sub: tourData.minAge },
+                        { icon: <GoClock />, label: tourData.duration, sub: "" },
+                        { icon: <FaMapSigns />, label: tourData.difficulty, sub: "Difficulty" },
+                        { icon: <MdOutlineMan />, label: `Min Age`, sub: tourData.minAge },
                     ].map((item, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm">
                             <span className="text-xl">{item.icon}</span>
@@ -315,40 +352,6 @@ export default function TourPage() {
                 </div>
             </div>
 
-            <div className="bg-gray-50 py-14 px-4">
-                <div className="max-w-5xl mx-auto">
-                    <p className="text-center text-xs text-teal-500 font-semibold tracking-widest uppercase mb-1">CHECK IT</p>
-                    <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Packages</h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {tourData.packages.map((pkg, i) => (
-                            <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                                <div className="relative h-44">
-                                    <Image src={pkg.img} alt={pkg.name} fill className="object-cover" />
-                                    <span className="absolute top-3 right-3 bg-teal-500 text-white text-xs px-2 py-1 rounded-full">
-                                        {pkg.weeks} Week{pkg.weeks > 1 ? "s" : ""}
-                                    </span>
-                                </div>
-                                <div className="p-5">
-                                    <h3 className="font-bold text-gray-900 text-lg">{pkg.name}</h3>
-                                    <p className="text-xs text-gray-400 flex items-center gap-1 mb-3">📍 {pkg.location}</p>
-                                    <p className="text-sm text-gray-500 mb-4 leading-relaxed">{pkg.desc}</p>
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <span className="text-xs text-gray-400">From</span>
-                                            <p className="text-xl font-bold text-gray-900">$ {pkg.price}</p>
-                                        </div>
-                                        <button className="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition">
-                                            Details
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                </div>
-            </div>
         </div>
     )
 }
