@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+
     remotePatterns: [
       { protocol: "https", hostname: "www.shms.com" },
       { protocol: "https", hostname: "tse2.mm.bing.net" },
@@ -16,6 +17,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.pinimg.com" },
     ],
   },
+
 };
 
 export default nextConfig;

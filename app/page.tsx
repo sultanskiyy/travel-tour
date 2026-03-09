@@ -30,6 +30,7 @@ export default function HomePage() {
 
   return (
     <>
+
       <HeroSection />
       <CategoryToursSection categories={categories} />
       <ToursSection />{" "}
@@ -38,6 +39,7 @@ export default function HomePage() {
       <DestinationsSection destinations={destinations} />
       <AdventureSection />
       <VideoPartnersSection />
+
     </>
   );
 }
