@@ -62,7 +62,7 @@ export default function TourPage({ params }: { params: Promise<{ id: string }> }
             </div>
 
             {/* Tour Meta */}
-            <div className="max-w-5xl mx-auto px-4 py-6 flex flex-wrap items-center gap-6 border-b border-gray-200">
+            <div className="mx-auto px-4 py-6 flex flex-wrap items-center gap-6 border-b border-gray-200">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">{tour.title_uz || tour.title}</h1>
                     <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
