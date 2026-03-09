@@ -50,9 +50,9 @@ export default function TourPage({ params }: { params: Promise<{ id: string }> }
     return (
         <div className="bg-white font-sans text-gray-800">
             {/* Hero */}
-            <div className="relative  w-full h-64 md:h-96 overflow-hidden">
+            <div className="relative w-full h-64 md:h-96 overflow-hidden">
                 <Image
-                    src={tour.cover_image || "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=1200&q=80"}
+                    src={tour.cover_image}
                     alt={tour.title_uz}
                     fill
                     className="object-cover"
@@ -60,6 +60,7 @@ export default function TourPage({ params }: { params: Promise<{ id: string }> }
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-20" />
             </div>
+            
 
             {/* Tour Meta */}
             <div className="mx-auto py-6 flex flex-wrap items-center gap-6 border-b border-gray-200">
