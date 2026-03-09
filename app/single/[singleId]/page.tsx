@@ -37,7 +37,6 @@ export default function TourPage({ params }: { params: Promise<{ id: string }> }
     const [children, setChildren] = useState(0)
     const [healthIns, setHealthIns] = useState(false)
     const [medicalIns, setMedicalIns] = useState(false)
-    const [openDay, setOpenDay] = useState<number | null>(null)
 
     useEffect(() => {
         getData({ url: `tour/${id}` }).then((data) => {
