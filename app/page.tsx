@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import getData from "@/service/api";
 import type { CategoryType } from "@/types/CategoryType";
 import type { TourCardType } from "@/types/TourCardType";
 import { useTours } from "@/hooks/useTours";
 
-import Container from "@/components/Container";
-import Link from "next/link";
-import Image from "next/image";
-import { FaSearch, FaMapMarkerAlt, FaGlobe, FaCheck } from "react-icons/fa";
+import HeroSection from "@/components/home/HeroSection";
+import CategoryToursSection from "@/components/home/CategoryToursSection";
+import ToursSection from "@/components/home/ToursSection";
+import VacationSearchSection from "@/components/home/VacationSearchSection";
+import DestinationsSection from "@/components/home/DestinationsSection";
+import AdventureSection from "@/components/home/AdventureSection";
+import VideoPartnersSection from "@/components/home/VideoPartnersSection";
 
 export default function HomePage() {
   const [categories, setCategories] = useState<CategoryType[]>([]);
