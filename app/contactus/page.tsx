@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Container from "@/components/Container";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
 export default function ContactUs() {
@@ -58,7 +59,7 @@ export default function ContactUs() {
       </section>
 
       <section className="py-12">
-        <div className="max-w-330 mx-auto px-4 lg:pb-60 sm:px-6">
+        <Container className="px-4 lg:pb-60 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="flex gap-4">
               <div className="w-12 h-12 rounded-full bg-emerald-50 grid place-items-center">
@@ -142,7 +143,7 @@ export default function ContactUs() {
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       <section className="relative">
@@ -157,7 +158,7 @@ export default function ContactUs() {
         </div>
 
         <div className="absolute left-0 right-0 top-0 pointer-events-none">
-          <div className="max-w-330 mx-auto px-4 sm:px-6">
+          <Container className="px-4 sm:px-6">
             <div className="-translate-y-56 md:-translate-y-64 bg-gray-100 rounded-2xl shadow-xl p-8 md:p-12 max-w-3xl mx-auto z-10 relative pointer-events-auto">
               <p className="text-emerald-500 text-sm text-center mb-2">
                 Your Next Trip
@@ -207,7 +208,7 @@ export default function ContactUs() {
                 )}
               </form>
             </div>
-          </div>
+          </Container>
         </div>
       </section>
     </div>
