@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const VideoPartnersSection = () => {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 px-32 bg-white">
       <Container className="text-center">
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-12">
           Travel Itineraries

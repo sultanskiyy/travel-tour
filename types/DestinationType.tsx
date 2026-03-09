@@ -1,4 +1,4 @@
-export interface DestinationType {
+export type DestinationType = {
   id: string;
   name?: string;
   name_uz?: string;

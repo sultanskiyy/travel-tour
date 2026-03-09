@@ -4,7 +4,7 @@ import Container from "@/components/Container";
 
 const AdventureSection = () => {
   return (
-    <section className="py-24 bg-linear-to-r from-white via-gray-300 to-black/75">
+    <section className="py-24 px-32 bg-linear-to-r from-white via-gray-300 to-black/75">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div className="relative w-full max-w-md mx-auto lg:mx-0 h-105 rounded-lg overflow-hidden shadow-xl">

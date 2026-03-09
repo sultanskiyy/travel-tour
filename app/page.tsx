@@ -30,16 +30,13 @@ export default function HomePage() {
 
   return (
     <>
-
       <HeroSection />
       <CategoryToursSection categories={categories} />
-      <ToursSection />{" "}
-      {/* sizning package fetch qiladigan ToursSection bo‘lsa */}
+      <ToursSection />
       <VacationSearchSection />
       <DestinationsSection destinations={destinations} />
       <AdventureSection />
       <VideoPartnersSection />
-
     </>
   );
 }
