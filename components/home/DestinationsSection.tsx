@@ -4,7 +4,6 @@ import { useState } from "react";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
-import { getImageUrl } from "@/lib/getImageUrl";
 import type { DestinationType } from "@/types/DestinationType";
 
 type Props = {
@@ -42,7 +41,7 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {visibleDestinations.map((item) => {
             const rawImage = item.image || item.cover_image || item.icon || "";
-            const imgSrc = getImageUrl(rawImage);
+            const imgSrc = rawImage && rawImage.trim() ? rawImage : "/placeholder.jpg";
 
             return (
               <Link
