@@ -9,8 +9,14 @@ const nextConfig: NextConfig = {
       "res.cloudinary.com",
       "i.ytimg.com",
       "adventourss.com",
-      "images.unsplash.com"
-    ]
+      "images.unsplash.com" ,
+      "next.config.js" ,
+      "cdn.properties.emaar.com",
+      "cdn.properties.emaar.com"  ,
+      "i.pinimg.com",
+      "tse3.mm.bing.net",
+      
+      ]
   }
 };
 

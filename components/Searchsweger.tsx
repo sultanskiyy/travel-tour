@@ -13,44 +13,15 @@ import "../app/searchsweger.css";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import getData from "@/service/api";
 import Image from "next/image";
+import { PackageType } from "@/types/PackageTypes";
 
-const packages = [
-    {
-        id: 1,
-        title: "Santorini Escape",
-        image:
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop",
-        price: "$450",
-    },
-    {
-        id: 2,
-        title: "Mountain Adventure",
-        image:
-            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop",
-        price: "$380",
-    },
-    {
-        id: 3,
-        title: "Tropical Paradise",
-        image:
-            "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?q=80&w=1600&auto=format&fit=crop",
-        price: "$520",
-    },
-    {
-        id: 4,
-        title: "Ocean Breeze",
-        image:
-            "https://images.unsplash.com/photo-1493558103817-58b2924bce98?q=80&w=1600&auto=format&fit=crop",
-        price: "$610",
-    },
-];
 
 const Searchsweger = () => {
     const [category, setCategory] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await getData({ url: "category" });
+            const data = await getData({ url: "package" });
             console.log(data);
             setCategory(data);
         };
@@ -94,13 +65,13 @@ const Searchsweger = () => {
             onAutoplayTimeLeft={onAutoplayTimeLeft}
             className="mySwiper"
         >
-            {packages.map((item) => (
-                <SwiperSlide key={item.id}>
+            {category?.map((item:PackageType) => (
+                <SwiperSlide key={item?.id}>
                     <section className="w-full bg-white">
                         <div className="relative w-full h-[340px] md:h-[420px] overflow-hidden">
                             <Image
-                                src={item.image}
-                                alt={item.title}
+                                src={item?.cover_image}                           
+                                     alt={item?.title}
                                 fill
                                 className="object-cover"
                             />
