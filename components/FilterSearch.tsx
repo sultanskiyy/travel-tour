@@ -1,4 +1,71 @@
+"use client";
+
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+const typologyOptions = [
+    "Sports Activities",
+    "Family-Friendly",
+    "Heritage Tours",
+    "Road Trips",
+    "Budget Travel",
+    "Culinary Tourism",
+    "Eco-tourism",
+    "Adventure Travel",
+    "Beach Holidays",
+    "Cultural Tours",
+];
+
+const durationOptions = ["1 Week", "10 Days", "15 Days", "5 Days"];
+const difficultyOptions = ["Challenging", "Difficult", "Easy", "Medium"];
+const minAgeOptions = ["0", "16", "18", "5"];
+
 const FilterSearch = () => {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const updateParam = (key: string, value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (value.trim()) {
+            params.set(key, value);
+        } else {
+            params.delete(key);
+        }
+
+        router.push(`${pathname}?${params.toString()}`);
+    };
+
+    const updateCheckboxArray = (key: string, value: string, checked: boolean) => {
+        const params = new URLSearchParams(searchParams.toString());
+        const currentValues = params.getAll(key);
+
+        let nextValues: string[] = [];
+
+        if (checked) {
+            nextValues = [...currentValues, value];
+        } else {
+            nextValues = currentValues.filter((item) => item !== value);
+        }
+
+        params.delete(key);
+        nextValues.forEach((item) => params.append(key, item));
+
+        router.push(`${pathname}?${params.toString()}`);
+    };
+
+    const updatePromo = (checked: boolean) => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (checked) {
+            params.set("onlyPromo", "1");
+        } else {
+            params.delete("onlyPromo");
+        }
+
+        router.push(`${pathname}?${params.toString()}`);
+    };
+
     return (
         <aside className="w-full max-w-[280px] bg-white p-6">
             <div className="space-y-8">
@@ -9,6 +76,8 @@ const FilterSearch = () => {
                     <input
                         type="text"
                         placeholder="All Destinations"
+                        defaultValue={searchParams.get("destination") || ""}
+                        onChange={(e) => updateParam("destination", e.target.value)}
                         className="w-full h-10 px-3 border border-gray-200 text-sm outline-none placeholder:text-gray-400"
                     />
                 </div>
@@ -18,7 +87,9 @@ const FilterSearch = () => {
                         Select your date :
                     </h3>
                     <input
-                        type="text"
+                        type="date"
+                        defaultValue={searchParams.get("date") || ""}
+                        onChange={(e) => updateParam("date", e.target.value)}
                         className="w-full h-10 px-3 border border-gray-200 text-sm outline-none"
                     />
                 </div>
@@ -29,20 +100,16 @@ const FilterSearch = () => {
                     </h3>
 
                     <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-[13px] text-gray-500">
-                        {[
-                            "Sports Activities",
-                            "Family-Friendly",
-                            "Heritage Tours",
-                            "Road Trips",
-                            "Budget Travel",
-                            "Culinary Tourism",
-                            "Eco-tourism",
-                            "Adventure Travel",
-                            "Beach Holidays",
-                            "Cultural Tours",
-                        ].map((item, index) => (
+                        {typologyOptions.map((item, index) => (
                             <label key={index} className="flex items-center gap-2">
-                                <input type="checkbox" className="w-3.5 h-3.5" />
+                                <input
+                                    type="checkbox"
+                                    className="w-3.5 h-3.5"
+                                    checked={searchParams.getAll("typology").includes(item)}
+                                    onChange={(e) =>
+                                        updateCheckboxArray("typology", item, e.target.checked)
+                                    }
+                                />
                                 <span>{item}</span>
                             </label>
                         ))}
@@ -54,15 +121,27 @@ const FilterSearch = () => {
                         Max Price :
                     </h3>
 
-                    <div className="relative w-full h-2 bg-gray-200 rounded-full">
-                        <div className="absolute left-0 top-0 h-2 w-[55%] bg-gray-500 rounded-full"></div>
-                        <div className="absolute left-[55%] top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-700 rounded-sm"></div>
+                    <input
+                        type="range"
+                        min="0"
+                        max="10000"
+                        step="100"
+                        defaultValue={searchParams.get("maxPrice") || "5000"}
+                        onChange={(e) => updateParam("maxPrice", e.target.value)}
+                        className="w-full"
+                    />
+
+                    <div className="flex justify-end mt-3 text-sm text-gray-500">
+                        $ {searchParams.get("maxPrice") || "5000"}
                     </div>
 
-                    <div className="flex justify-end mt-3 text-sm text-gray-500">$ 5000</div>
-
                     <label className="flex items-center gap-2 mt-4 text-[13px] text-gray-500">
-                        <input type="checkbox" className="w-3.5 h-3.5" />
+                        <input
+                            type="checkbox"
+                            className="w-3.5 h-3.5"
+                            checked={searchParams.get("onlyPromo") === "1"}
+                            onChange={(e) => updatePromo(e.target.checked)}
+                        />
                         <span>See only promotions</span>
                     </label>
                 </div>
@@ -74,9 +153,16 @@ const FilterSearch = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-y-2 gap-x-6 text-[13px] text-gray-500">
-                        {["1 Week", "10 Days", "15 Days", "5 Days"].map((item, index) => (
+                        {durationOptions.map((item, index) => (
                             <label key={index} className="flex items-center gap-2">
-                                <input type="checkbox" className="w-3.5 h-3.5" />
+                                <input
+                                    type="checkbox"
+                                    className="w-3.5 h-3.5"
+                                    checked={searchParams.getAll("duration").includes(item)}
+                                    onChange={(e) =>
+                                        updateCheckboxArray("duration", item, e.target.checked)
+                                    }
+                                />
                                 <span>{item}</span>
                             </label>
                         ))}
@@ -90,9 +176,16 @@ const FilterSearch = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-y-2 gap-x-6 text-[13px] text-gray-500">
-                        {["Challenging", "Difficult", "Easy", "Medium"].map((item, index) => (
+                        {difficultyOptions.map((item, index) => (
                             <label key={index} className="flex items-center gap-2">
-                                <input type="checkbox" className="w-3.5 h-3.5" />
+                                <input
+                                    type="checkbox"
+                                    className="w-3.5 h-3.5"
+                                    checked={searchParams.getAll("difficulty").includes(item)}
+                                    onChange={(e) =>
+                                        updateCheckboxArray("difficulty", item, e.target.checked)
+                                    }
+                                />
                                 <span>{item}</span>
                             </label>
                         ))}
@@ -106,9 +199,16 @@ const FilterSearch = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-y-2 gap-x-6 text-[13px] text-gray-500">
-                        {["0", "16", "18", "5"].map((item, index) => (
+                        {minAgeOptions.map((item, index) => (
                             <label key={index} className="flex items-center gap-2">
-                                <input type="checkbox" className="w-3.5 h-3.5" />
+                                <input
+                                    type="checkbox"
+                                    className="w-3.5 h-3.5"
+                                    checked={searchParams.getAll("minAge").includes(item)}
+                                    onChange={(e) =>
+                                        updateCheckboxArray("minAge", item, e.target.checked)
+                                    }
+                                />
                                 <span>{item}</span>
                             </label>
                         ))}

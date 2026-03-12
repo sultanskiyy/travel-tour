@@ -71,7 +71,7 @@ const Searchsweger = () => {
                         <div className="relative w-full h-[340px] md:h-[420px] overflow-hidden">
                             <Image
                                 src={item?.cover_image}                           
-                                     alt={item?.title}
+                                     alt={item?.title_uz}
                                 fill
                                 className="object-cover"
                             />

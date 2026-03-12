@@ -1,41 +1,31 @@
-export interface PackageType {
-    country_id: string;
-    cover_image: string;
-    created_at: number;
-    currency: string;
-    departure_city: string;
-    departure_date: string;
-    description: string;
-    destination_id: string;
-    discount_pct: number;
-    duration_days: number;
-    duration_nights: number;
-
-    excludes: string[];
-    includes: string[];
-
+export type PackageType = {
     id: string;
 
-    is_active: boolean;
-    is_featured: boolean;
-    is_flexible: boolean;
+    cover_image: string;
 
-    itinerary: string;
+    departure_city: string;
 
-    max_people: number;
-    min_people: number;
+    title_uz: string;
 
-    original_price: number;
+    description: string;
 
     package_type: string;
 
-    slug: string;
-
-    title: string;
-    title_ru: string;
-    title_uz: string;
-
     total_price: number;
 
-    updated_at: number;
-}
+    original_price?: number;
+
+    discount_pct?: number;
+
+    is_promotion?: boolean;
+
+    duration_days?: number;
+
+    duration_label?: string;
+
+    difficulty?: string;
+
+    min_age?: number;
+
+    departure_date?: string;
+};
