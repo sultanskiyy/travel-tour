@@ -28,7 +28,7 @@ const page = async ({ searchParams }: PageProps) => {
             <FilterSearch />
             <TourCardsSarch searchParams={searchParams} />
   </div>
-        
+      
 </div>
       </section>
     </div>
