@@ -33,7 +33,7 @@ const CategoryToursSection = ({ categories = [] }: Props) => {
         </div>
       </Container>
 
-      <Container>
+      <Container className="px-9">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 place-items-center">
           {categories
             .filter((el) => {

@@ -1,22 +1,29 @@
-const BASE_URL = "https://x8ki-letl-twmt.n7.xano.io/api:qNrTfAaz";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_URL || "https://x8ki-letl-twmt.n7.xano.io/api:qNrTfAaz";
 
 type GetDataProps = {
   url: string;
 };
 
 export default async function getData({ url }: GetDataProps) {
-  try {
-    const fullUrl = `${BASE_URL}/${url}`;
+  const fullUrl = `${BASE_URL}/${url}`;
 
+  try {
     const res = await fetch(fullUrl, {
-      cache: "no-store",
+      next: { revalidate: 120 },
       headers: {
         Accept: "application/json",
       },
     });
 
     if (!res.ok) {
-      const errorText = await res.text();
+      let errorText = "";
+
+      try {
+        errorText = await res.text();
+      } catch {
+        errorText = "No response body";
+      }
 
       console.error("API request failed");
       console.error("URL:", fullUrl);
@@ -26,10 +33,9 @@ export default async function getData({ url }: GetDataProps) {
       return [];
     }
 
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (error) {
-    console.error("API Error:", error);
+    console.error("Network/API Error:", error);
     return [];
   }
 }

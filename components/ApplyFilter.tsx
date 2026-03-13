@@ -1,4 +1,4 @@
-import { PackageType } from "@/types/PackageTypes";
+import type { PackageType } from "@/types/PackageTypes";
 
 export type SearchParamsType = {
   destination?: string;

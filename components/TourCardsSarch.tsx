@@ -1,29 +1,36 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Clock3, MapPin, Mail, Share2 } from "lucide-react";
-import getData from "@/service/api";
-import { PackageType } from "@/types/PackageTypes";
-import { applyFilters, getDurationLabel, SearchParamsType } from "./ApplyFilter";
+import type { PackageType } from "@/types/PackageTypes";
+import {
+  applyFilters,
+  getDurationLabel,
+  type SearchParamsType,
+} from "./ApplyFilter";
 
 type Props = {
   searchParams: Promise<SearchParamsType>;
+  packages: PackageType[];
 };
 
 const ITEMS_PER_PAGE = 6;
 
-const TourCardsSarch = async ({ searchParams }: Props) => {
+const TourCardsSarch = async ({ searchParams, packages }: Props) => {
   const sp = await searchParams;
-  const response = await getData({ url: "package" });
-  const packages: PackageType[] = Array.isArray(response) ? response : [];
-
   const filteredTours = applyFilters(packages, sp);
 
   const currentPage = Math.max(1, Number(sp.page || "1"));
-  const totalPages = Math.max(1, Math.ceil(filteredTours.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTours.length / ITEMS_PER_PAGE)
+  );
   const safePage = Math.min(currentPage, totalPages);
 
   const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
-  const paginatedTours = filteredTours.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedTours = filteredTours.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const createPageLink = (page: number) => {
     const params = new URLSearchParams();
@@ -53,7 +60,9 @@ const TourCardsSarch = async ({ searchParams }: Props) => {
     <section className="min-w-0 w-full">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-black">All Tours</h2>
-        <p className="text-sm text-gray-500">{filteredTours.length} results found</p>
+        <p className="text-sm text-gray-500">
+          {filteredTours.length} results found
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -63,12 +72,18 @@ const TourCardsSarch = async ({ searchParams }: Props) => {
             className="overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           >
             <div className="relative h-[220px] w-full">
-              <Image
-                src={tour.cover_image || "/placeholder.jpg"}
-                alt={tour.title_uz || "tour"}
-                fill
-                className="object-cover"
-              />
+              {tour.cover_image ? (
+                <Image
+                  src={tour.cover_image}
+                  alt={tour.title_uz || "tour"}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                  <span className="text-sm text-gray-600">No image</span>
+                </div>
+              )}
 
               {tour.is_promotion && (
                 <span className="absolute right-3 top-3 rounded-full bg-rose-400 px-3 py-1 text-[10px] font-semibold tracking-wide text-white">
@@ -93,12 +108,12 @@ const TourCardsSarch = async ({ searchParams }: Props) => {
 
             <div className="p-5 pt-0">
               <h3 className="text-[20px] font-bold text-black">
-                {tour.title_uz || tour.title_uz}
+                {tour.title_uz || "Untitled tour"}
               </h3>
 
               <div className="mt-1 flex items-center gap-1 text-[13px] text-gray-400">
                 <MapPin className="h-3.5 w-3.5 text-rose-400" />
-                <span>{tour.departure_city || tour.title_uz}</span>
+                <span>{tour.departure_city || "Unknown location"}</span>
               </div>
 
               <p className="mt-5 min-h-[96px] text-[13px] leading-6 text-gray-400">
@@ -114,7 +129,7 @@ const TourCardsSarch = async ({ searchParams }: Props) => {
                   <p className="text-[12px] text-gray-400">From</p>
                   <div className="flex items-end gap-1">
                     <span className="text-[30px] font-bold leading-none text-black">
-                      ${tour.total_price}
+                      ${tour.total_price ?? 0}
                     </span>
                     {tour.original_price && (
                       <span className="mb-1 text-[12px] text-gray-400 line-through">
