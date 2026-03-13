@@ -1,12 +1,26 @@
+// components/AdventureSection.tsx
 import Image from "next/image";
 import { FaCheck } from "react-icons/fa";
 import Container from "@/components/Container";
 
 const AdventureSection = () => {
   return (
-    <section className="py-24 px-32 bg-linear-to-r from-white via-gray-300 to-black/75">
+    <section className="relative py-24 px-8 lg:px-32">
+      {/* Background image */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/bgimg.jpg"
+          alt="Background Adventure"
+          fill
+          className="object-cover object-center"
+        />
+        {/* Optional overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
+      </div>
+
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+          {/* Left Image */}
           <div className="relative w-full max-w-md mx-auto lg:mx-0 h-105 rounded-lg overflow-hidden shadow-xl">
             <Image
               src="/ormon.png"
@@ -16,8 +30,9 @@ const AdventureSection = () => {
             />
           </div>
 
-          <div className="text-black md:text-white max-w-lg">
-            <p className="text-sm text-black/70 md:text-white/80 mb-3 tracking-wide">
+          {/* Right Text */}
+          <div className="text-white max-w-lg">
+            <p className="text-sm text-white/80 mb-3 tracking-wide">
               Adventure Travel
             </p>
 
@@ -25,7 +40,7 @@ const AdventureSection = () => {
               Embrace the Thrill of <br /> the Unknown
             </h2>
 
-            <p className="text-sm text-black/70 md:text-white/80 mt-5 leading-6">
+            <p className="text-sm text-white/80 mt-5 leading-6">
               Are you tired of the typical tourist destinations and looking to
               step out of your comfort zone? Adventure travel may be the perfect
               solution for you! Here are four reasons why you should book an
@@ -33,17 +48,17 @@ const AdventureSection = () => {
             </p>
 
             <div className="mt-8 space-y-4">
-              <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
+              <div className="flex items-center gap-3 border-b border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Connect with nature</span>
               </div>
 
-              <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
+              <div className="flex items-center gap-3 border-b border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Experience other cultures</span>
               </div>
 
-              <div className="flex items-center gap-3 border-b border-black/20 md:border-white/20 pb-3">
+              <div className="flex items-center gap-3 border-b border-white/20 pb-3">
                 <FaCheck className="text-emerald-400 text-sm" />
                 <span className="text-sm">Create unforgettable memories</span>
               </div>

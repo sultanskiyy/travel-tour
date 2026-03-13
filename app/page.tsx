@@ -1,5 +1,4 @@
 import getData from "@/service/api";
-
 import type { CategoryType } from "@/types/CategoryType";
 import type { DestinationType } from "@/types/DestinationType";
 
@@ -11,7 +10,9 @@ import DestinationsSection from "@/components/home/DestinationsSection";
 import AdventureSection from "@/components/home/AdventureSection";
 import VideoPartnersSection from "@/components/home/VideoPartnersSection";
 
-function pickString(obj: Record<string, unknown>, keys: string[]) {
+import PricingPackages from "@/components/home/PricingPackages"; // ✅ PricingPackages qo‘shildi
+
+function pickString(obj: Record<string, unknown>, keys: string[]): string {
   for (const key of keys) {
     const value = obj[key];
     if (typeof value === "string" && value.trim() !== "") {
@@ -23,8 +24,8 @@ function pickString(obj: Record<string, unknown>, keys: string[]) {
 
 export default async function HomePage() {
   const [categoryResponse, destinationResponse] = await Promise.all([
-    getData({ url: "category" }),
-    getData({ url: "destination" }),
+    getData({ url: "category" }).catch(() => []),
+    getData({ url: "destination" }).catch(() => []),
   ]);
 
   const categories: CategoryType[] = Array.isArray(categoryResponse)
@@ -43,7 +44,7 @@ export default async function HomePage() {
       title:
         pickString(raw, ["title_uz", "title", "name_uz", "name"]) ||
         "Destination",
-      image: pickString(raw, ["cover_image", "image"]),
+      image: pickString(raw, ["cover_image", "image"]) || "/images/default-destination.jpg",
       href: `/destination/${String(raw.id ?? "")}`,
     };
   });
@@ -57,6 +58,7 @@ export default async function HomePage() {
       <DestinationsSection destinations={mappedDestinations} />
       <AdventureSection />
       <VideoPartnersSection />
+      <PricingPackages />
     </>
   );
 }
