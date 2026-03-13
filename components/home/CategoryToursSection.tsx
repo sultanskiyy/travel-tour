@@ -13,11 +13,14 @@ type Props = {
 type CategoryCardProps = {
   id: number | string;
   name: string;
-  image: string;
+  image: string; // faqat string, default bilan beramiz
 };
 
 function CategoryCard({ id, name, image }: CategoryCardProps) {
-  const [imgSrc, setImgSrc] = useState(image);
+  const [imgSrc, setImgSrc] = useState(
+    image ||
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
+  );
 
   return (
     <Link
@@ -32,7 +35,7 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
         sizes="(max-width:768px) 100vw, 360px"
         onError={() =>
           setImgSrc(
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80"
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
           )
         }
       />
@@ -45,8 +48,9 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
 }
 
 const CategoryToursSection = ({ categories = [] }: Props) => {
+  // validCategories: faqat URL bo‘lgan rasm bilan
   const validCategories = categories.filter(
-    (el) => typeof el.icon === "string" && el.icon.startsWith("http")
+    (el) => typeof el.icon === "string" && el.icon,
   );
 
   return (
@@ -69,8 +73,11 @@ const CategoryToursSection = ({ categories = [] }: Props) => {
             <CategoryCard
               key={el.id}
               id={el.id}
-              name={el.name_uz}
-              image={el.icon}
+              name={el.name_uz || "No Name"} // default name
+              image={
+                el.icon ||
+                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80"
+              } // default image
             />
           ))}
         </div>
