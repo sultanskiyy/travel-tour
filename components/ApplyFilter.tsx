@@ -7,6 +7,7 @@ export type SearchParamsType = {
   duration?: string | string[];
   difficulty?: string | string[];
   minAge?: string | string[];
+  minPrice?: string;
   maxPrice?: string;
   onlyPromo?: string;
   page?: string;
@@ -17,33 +18,49 @@ function toArray(value?: string | string[]) {
   return Array.isArray(value) ? value : [value];
 }
 
-const normalize = (value: unknown) => String(value || "").trim().toLowerCase();
+function normalize(value: unknown) {
+  return String(value ?? "").trim().toLowerCase();
+}
+
+function toSafeNumber(value: unknown) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+}
 
 export function getDurationLabel(tour: PackageType) {
-  if (tour.duration_label) return String(tour.duration_label).trim();
-  if (tour.duration_days) return `${tour.duration_days} Days`;
+  if (tour.duration_label && String(tour.duration_label).trim()) {
+    return String(tour.duration_label).trim();
+  }
+
+  if (tour.duration_days) {
+    return `${tour.duration_days} Days`;
+  }
+
   return "";
 }
 
 export function applyFilters(data: PackageType[], sp: SearchParamsType) {
-  const typologies = toArray(sp.typology).map(normalize);
-  const durations = toArray(sp.duration).map(normalize);
-  const difficulties = toArray(sp.difficulty).map(normalize);
-  const minAges = toArray(sp.minAge).map(Number).filter(Number.isFinite);
+  const typologies = toArray(sp.typology).map(normalize).filter(Boolean);
+  const durations = toArray(sp.duration).map(normalize).filter(Boolean);
+  const difficulties = toArray(sp.difficulty).map(normalize).filter(Boolean);
+  const minAges = toArray(sp.minAge)
+    .map((value) => Number(value))
+    .filter(Number.isFinite);
 
+  const minPrice = sp.minPrice ? Number(sp.minPrice) : 0;
   const maxPrice = sp.maxPrice ? Number(sp.maxPrice) : Infinity;
   const onlyPromo = sp.onlyPromo === "1";
 
   return data.filter((tour) => {
     if (sp.destination?.trim()) {
-      const q = sp.destination.trim().toLowerCase();
+      const query = normalize(sp.destination);
 
-      const match =
-        normalize(tour.departure_city).includes(q) ||
-        normalize(tour.title_uz).includes(q) ||
-        normalize(tour.package_type).includes(q);
+      const matchesDestination =
+        normalize(tour.departure_city).includes(query) ||
+        normalize(tour.title_uz).includes(query) ||
+        normalize(tour.package_type).includes(query);
 
-      if (!match) return false;
+      if (!matchesDestination) return false;
     }
 
     if (sp.date && tour.departure_date) {
@@ -55,9 +72,10 @@ export function applyFilters(data: PackageType[], sp: SearchParamsType) {
       }
     }
 
-    const price = Number(tour.total_price);
-    if (Number.isFinite(maxPrice) && Number.isFinite(price) && price > maxPrice) {
-      return false;
+    const price = toSafeNumber(tour.total_price);
+    if (price !== null) {
+      if (price < minPrice) return false;
+      if (Number.isFinite(maxPrice) && price > maxPrice) return false;
     }
 
     if (onlyPromo && !tour.is_promotion) return false;
@@ -83,8 +101,11 @@ export function applyFilters(data: PackageType[], sp: SearchParamsType) {
       return false;
     }
 
-    if (minAges.length > 0 && !minAges.includes(Number(tour.min_age))) {
-      return false;
+    const tourMinAge = toSafeNumber(tour.min_age);
+    if (minAges.length > 0) {
+      if (tourMinAge === null || !minAges.includes(tourMinAge)) {
+        return false;
+      }
     }
 
     return true;

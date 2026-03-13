@@ -1,303 +1,273 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import getData from "@/service/api";
-import { PackageType } from "@/types/PackageTypes";
-import { getDurationLabel } from "./ApplyFilter";
+import type { PackageType } from "@/types/PackageTypes";
 
-const cleanText = (value: unknown) => String(value || "").trim();
+type Props = {
+  packages?: PackageType[];
+};
 
-const FilterSearch = () => {
+const getDurationLabel = (item: PackageType) => {
+  if (item.duration_label && String(item.duration_label).trim()) {
+    return String(item.duration_label).trim();
+  }
+  if (item.duration_days) {
+    return `${item.duration_days} Days`;
+  }
+  return "";
+};
+
+export default function FilterSearch({ packages = [] }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [packages, setPackages] = useState<PackageType[]>([]);
-  const [localPrice, setLocalPrice] = useState(
-    searchParams.get("maxPrice") || "5000",
-  );
-
-  useEffect(() => {
-    setLocalPrice(searchParams.get("maxPrice") || "5000");
-  }, [searchParams]);
-
-  useEffect(() => {
-    const fetchPackages = async () => {
-      const data = await getData({ url: "package" });
-      setPackages(Array.isArray(data) ? data : []);
-    };
-
-    fetchPackages();
-  }, []);
-
-  const filterOptions = useMemo(() => {
-    const typologyOptions = Array.from(
-      new Set(
-        packages.map((item) => cleanText(item.package_type)).filter(Boolean),
-      ),
-    );
-
-    const durationOptions = Array.from(
-      new Set(
+  const typologies = useMemo(() => {
+    return [
+      ...new Set(
         packages
-          .map((item) => cleanText(getDurationLabel(item)))
-          .filter(Boolean),
+          .map((item) => item.package_type)
+          .filter((v): v is string => Boolean(v && String(v).trim()))
       ),
-    );
-
-    const difficultyOptions = Array.from(
-      new Set(
-        packages.map((item) => cleanText(item.difficulty)).filter(Boolean),
-      ),
-    );
-
-    const minAgeOptions = Array.from(
-      new Set(packages.map((item) => cleanText(item.min_age)).filter(Boolean)),
-    ).sort((a, b) => Number(a) - Number(b));
-
-    const maxApiPrice = Math.max(
-      0,
-      ...packages.map((item) => Number(item.total_price) || 0),
-    );
-
-    const rangeMax =
-      maxApiPrice > 0 ? String(Math.ceil(maxApiPrice / 100) * 100) : "5000";
-
-    return {
-      typologyOptions,
-      durationOptions,
-      difficultyOptions,
-      minAgeOptions,
-      rangeMax,
-    };
+    ];
   }, [packages]);
 
-  const navigateWithParams = (params: URLSearchParams) => {
-    params.delete("page");
+  const durations = useMemo(() => {
+    return [
+      ...new Set(
+        packages
+          .map((item) => getDurationLabel(item))
+          .filter((v) => v.trim() !== "")
+      ),
+    ];
+  }, [packages]);
+
+  const difficulties = useMemo(() => {
+    return [
+      ...new Set(
+        packages
+          .map((item) => item.difficulty)
+          .filter((v): v is string => Boolean(v && String(v).trim()))
+      ),
+    ];
+  }, [packages]);
+
+  const minAges = useMemo(() => {
+    return [
+      ...new Set(
+        packages
+          .map((item) => item.min_age)
+          .filter((v) => v !== undefined && v !== null && String(v).trim() !== "")
+          .map((v) => String(v))
+      ),
+    ];
+  }, [packages]);
+
+  const prices = useMemo(() => {
+    return packages
+      .map((item) => Number(item.total_price))
+      .filter((v) => Number.isFinite(v));
+  }, [packages]);
+
+  const minAvailablePrice = useMemo(() => {
+    if (prices.length === 0) return 0;
+    return Math.min(...prices);
+  }, [prices]);
+
+  const maxAvailablePrice = useMemo(() => {
+    if (prices.length === 0) return 1000;
+    return Math.max(...prices);
+  }, [prices]);
+
+  const selectedValues = (key: string) => searchParams.getAll(key);
+
+  const currentMinPrice = (() => {
+    const value = Number(searchParams.get("minPrice"));
+    if (Number.isFinite(value)) return value;
+    return minAvailablePrice;
+  })();
+
+  const currentMaxPrice = (() => {
+    const value = Number(searchParams.get("maxPrice"));
+    if (Number.isFinite(value)) return value;
+    return maxAvailablePrice;
+  })();
+
+  const pushParams = (params: URLSearchParams) => {
+    params.set("page", "1");
     const query = params.toString();
-
-    router.replace(query ? `${pathname}?${query}` : pathname, {
-      scroll: false,
-    });
+    router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
 
-  const updateParam = (key: string, value: string) => {
+  const updateMultiValue = (key: string, value: string, checked: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
-
-    if (value.trim()) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-
-    navigateWithParams(params);
-  };
-
-  const updateCheckboxArray = (
-    key: string,
-    value: string,
-    checked: boolean,
-  ) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const currentValues = params.getAll(key);
-
-    let nextValues: string[] = [];
-
-    if (checked) {
-      nextValues = Array.from(new Set([...currentValues, value]));
-    } else {
-      nextValues = currentValues.filter((item) => item !== value);
-    }
+    const current = params.getAll(key);
 
     params.delete(key);
-    nextValues.forEach((item) => params.append(key, item));
 
-    navigateWithParams(params);
-  };
-
-  const updatePromo = (checked: boolean) => {
-    const params = new URLSearchParams(searchParams.toString());
-
+    let nextValues = current;
     if (checked) {
-      params.set("onlyPromo", "1");
+      if (!current.includes(value)) nextValues = [...current, value];
     } else {
-      params.delete("onlyPromo");
+      nextValues = current.filter((v) => v !== value);
     }
 
-    navigateWithParams(params);
+    nextValues.forEach((v) => params.append(key, v));
+    pushParams(params);
   };
 
-  const applyPriceFilter = () => {
+  const updatePriceRange = (min: number, max: number) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.set("maxPrice", localPrice);
-    navigateWithParams(params);
+    params.set("minPrice", String(min));
+    params.set("maxPrice", String(max));
+    pushParams(params);
   };
 
-  const clearAllFilters = () => {
-    router.replace(pathname, { scroll: false });
+  const updateMinInput = (value: string) => {
+    const nextMin = Number(value || 0);
+    const safeMin = Math.max(
+      minAvailablePrice,
+      Math.min(nextMin, currentMaxPrice)
+    );
+    updatePriceRange(safeMin, currentMaxPrice);
   };
+
+  const updateMaxInput = (value: string) => {
+    const nextMax = Number(value || 0);
+    const safeMax = Math.min(
+      maxAvailablePrice,
+      Math.max(nextMax, currentMinPrice)
+    );
+    updatePriceRange(currentMinPrice, safeMax);
+  };
+
+  const updateMinSlider = (value: string) => {
+    const nextMin = Number(value);
+    const safeMin = Math.min(nextMin, currentMaxPrice);
+    updatePriceRange(safeMin, currentMaxPrice);
+  };
+
+  const updateMaxSlider = (value: string) => {
+    const nextMax = Number(value);
+    const safeMax = Math.max(nextMax, currentMinPrice);
+    updatePriceRange(currentMinPrice, safeMax);
+  };
+
+  const clearFilters = () => {
+    router.push(pathname, { scroll: false });
+  };
+
+  const renderGroup = (title: string, keyName: string, items: string[]) => (
+    <div className="mt-10">
+      <h3 className="text-[22px] font-semibold text-black">{title}</h3>
+      <div className="mt-5 space-y-4">
+        {items.map((item, index) => {
+          const checked = selectedValues(keyName).includes(item);
+
+          return (
+            <label key={`${keyName}-${index}`} className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={(e) => updateMultiValue(keyName, item, e.target.checked)}
+                className="h-[18px] w-[18px] cursor-pointer rounded border border-gray-300 accent-emerald-500"
+              />
+              <span className="text-[18px] text-slate-500">{item}</span>
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const range = maxAvailablePrice - minAvailablePrice || 1;
+  const leftPercent = ((currentMinPrice - minAvailablePrice) / range) * 100;
+  const rightPercent = ((currentMaxPrice - minAvailablePrice) / range) * 100;
 
   return (
-    <aside className="w-full lg:w-[280px]">
-      <div className="space-y-8 rounded-xl bg-white p-5 shadow-sm lg:sticky lg:top-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-black">Filters</h2>
-          <button
-            onClick={clearAllFilters}
-            className="text-sm font-medium text-emerald-500"
-          >
-            Clear
-          </button>
-        </div>
+    <aside className="w-full max-w-[350px] rounded-[20px] bg-[#f3f3f3] p-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-[24px] font-bold text-black">Filters</h2>
+        <button
+          type="button"
+          onClick={clearFilters}
+          className="text-sm font-medium text-emerald-600 transition hover:text-emerald-700"
+        >
+          Clear
+        </button>
+      </div>
 
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Select your destination :
-          </h3>
-          <input
-            type="text"
-            placeholder="All Destinations"
-            value={searchParams.get("destination") || ""}
-            onChange={(e) => updateParam("destination", e.target.value)}
-            className="h-11 w-full rounded-md border border-gray-200 px-4 text-sm outline-none"
-          />
-        </div>
+      <div className="mt-10">
+        <h3 className="text-[22px] font-semibold text-black">Price</h3>
 
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Select your date :
-          </h3>
-          <input
-            type="date"
-            value={searchParams.get("date") || ""}
-            onChange={(e) => updateParam("date", e.target.value)}
-            className="h-11 w-full rounded-md border border-gray-200 px-4 text-sm outline-none"
-          />
-        </div>
-
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Typologies :
-          </h3>
-
-          <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-[12px] text-gray-600">
-            {filterOptions.typologyOptions.map((item) => (
-              <label key={item} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={searchParams.getAll("typology").includes(item)}
-                  onChange={(e) =>
-                    updateCheckboxArray("typology", item, e.target.checked)
-                  }
-                  className="h-4 w-4"
-                />
-                <span>{item}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Max Price :
-          </h3>
-
-          <input
-            type="range"
-            min="0"
-            max={filterOptions.rangeMax}
-            step="50"
-            value={localPrice}
-            onChange={(e) => setLocalPrice(e.target.value)}
-            onMouseUp={applyPriceFilter}
-            onTouchEnd={applyPriceFilter}
-            className="w-full accent-rose-500"
-          />
-
-          <div className="mt-2 flex justify-end text-sm text-gray-500">
-            $ {localPrice}
-          </div>
-
-          <label className="mt-4 flex items-center gap-2 text-[12px] text-gray-600">
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">
+            <p className="text-xs text-gray-400">dan</p>
             <input
-              type="checkbox"
-              checked={searchParams.get("onlyPromo") === "1"}
-              onChange={(e) => updatePromo(e.target.checked)}
-              className="h-4 w-4"
+              type="number"
+              min={minAvailablePrice}
+              max={currentMaxPrice}
+              value={currentMinPrice}
+              onChange={(e) => updateMinInput(e.target.value)}
+              className="mt-1 w-full bg-transparent text-[20px] font-semibold text-black outline-none"
             />
-            <span>See only promotions</span>
-          </label>
-        </div>
+          </div>
 
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Durations :
-          </h3>
-
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-[12px] text-gray-600">
-            {filterOptions.durationOptions.map((item) => (
-              <label key={item} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={searchParams.getAll("duration").includes(item)}
-                  onChange={(e) =>
-                    updateCheckboxArray("duration", item, e.target.checked)
-                  }
-                  className="h-4 w-4"
-                />
-                <span>{item}</span>
-              </label>
-            ))}
+          <div className="rounded-2xl bg-white px-4 py-3 shadow-sm">
+            <p className="text-xs text-gray-400">gacha</p>
+            <input
+              type="number"
+              min={currentMinPrice}
+              max={maxAvailablePrice}
+              value={currentMaxPrice}
+              onChange={(e) => updateMaxInput(e.target.value)}
+              className="mt-1 w-full bg-transparent text-[20px] font-semibold text-black outline-none"
+            />
           </div>
         </div>
 
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Difficulty :
-          </h3>
+        <div className="relative mt-6 px-1">
+          <div className="relative h-6">
+            <div className="absolute top-1/2 h-[4px] w-full -translate-y-1/2 rounded-full bg-gray-300" />
+            <div
+              className="absolute top-1/2 h-[4px] -translate-y-1/2 rounded-full bg-emerald-500"
+              style={{
+                left: `${leftPercent}%`,
+                width: `${rightPercent - leftPercent}%`,
+              }}
+            />
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-[12px] text-gray-600">
-            {filterOptions.difficultyOptions.map((item) => (
-              <label key={item} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={searchParams.getAll("difficulty").includes(item)}
-                  onChange={(e) =>
-                    updateCheckboxArray("difficulty", item, e.target.checked)
-                  }
-                  className="h-4 w-4"
-                />
-                <span>{item}</span>
-              </label>
-            ))}
+            <input
+              type="range"
+              min={minAvailablePrice}
+              max={maxAvailablePrice}
+              value={currentMinPrice}
+              onChange={(e) => updateMinSlider(e.target.value)}
+              className="range-slider absolute left-0 top-1/2 h-6 w-full -translate-y-1/2"
+            />
+
+            <input
+              type="range"
+              min={minAvailablePrice}
+              max={maxAvailablePrice}
+              value={currentMaxPrice}
+              onChange={(e) => updateMaxSlider(e.target.value)}
+              className="range-slider absolute left-0 top-1/2 h-6 w-full -translate-y-1/2"
+            />
           </div>
-        </div>
 
-        <div>
-          <h3 className="mb-4 text-[15px] font-semibold text-black">
-            Min Age :
-          </h3>
-
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-[12px] text-gray-600">
-            {filterOptions.minAgeOptions.map((item) => (
-              <label key={item} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={searchParams.getAll("minAge").includes(item)}
-                  onChange={(e) =>
-                    updateCheckboxArray("minAge", item, e.target.checked)
-                  }
-                  className="h-4 w-4"
-                />
-                <span>{item}</span>
-              </label>
-            ))}
+          <div className="mt-2 flex items-center justify-between text-xs text-gray-400">
+            <span>{minAvailablePrice}</span>
+            <span>{maxAvailablePrice}</span>
           </div>
         </div>
       </div>
+
+      {renderGroup("Typology", "typology", typologies)}
+      {renderGroup("Duration", "duration", durations)}
+      {renderGroup("Difficulty", "difficulty", difficulties)}
+      {renderGroup("Min Age", "minAge", minAges)}
     </aside>
   );
-};
-
-export default FilterSearch;
+}

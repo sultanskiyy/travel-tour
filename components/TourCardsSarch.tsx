@@ -15,22 +15,22 @@ type Props = {
 
 const ITEMS_PER_PAGE = 6;
 
-const TourCardsSarch = async ({ searchParams, packages }: Props) => {
+const isValidImage = (src?: string) =>
+  !!src && (src.startsWith("http://") || src.startsWith("https://"));
+
+export default async function TourCardsSarch({
+  searchParams,
+  packages,
+}: Props) {
   const sp = await searchParams;
   const filteredTours = applyFilters(packages, sp);
 
   const currentPage = Math.max(1, Number(sp.page || "1"));
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredTours.length / ITEMS_PER_PAGE)
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredTours.length / ITEMS_PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);
 
   const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
-  const paginatedTours = filteredTours.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+  const paginatedTours = filteredTours.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const createPageLink = (page: number) => {
     const params = new URLSearchParams();
@@ -60,9 +60,7 @@ const TourCardsSarch = async ({ searchParams, packages }: Props) => {
     <section className="min-w-0 w-full">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-black">All Tours</h2>
-        <p className="text-sm text-gray-500">
-          {filteredTours.length} results found
-        </p>
+        <p className="text-sm text-gray-500">{filteredTours.length} results found</p>
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -71,16 +69,16 @@ const TourCardsSarch = async ({ searchParams, packages }: Props) => {
             key={tour.id}
             className="overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           >
-            <div className="relative h-[220px] w-full">
-              {tour.cover_image ? (
+            <div className="relative h-[220px] w-full bg-gray-200">
+              {isValidImage(tour.cover_image) ? (
                 <Image
-                  src={tour.cover_image}
+                  src={tour.cover_image as string}
                   alt={tour.title_uz || "tour"}
                   fill
                   className="object-cover"
                 />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-sm text-gray-600">No image</span>
                 </div>
               )}
@@ -174,6 +172,4 @@ const TourCardsSarch = async ({ searchParams, packages }: Props) => {
       )}
     </section>
   );
-};
-
-export default TourCardsSarch;
+}

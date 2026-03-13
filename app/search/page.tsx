@@ -19,8 +19,8 @@ export default async function Page({ searchParams }: Props) {
 
       <section className="bg-[#f5f5f5] py-16">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[280px_minmax(0,1fr)]">
-            <FilterSearch />
+          <div className="flex flex-col items-start gap-10 lg:flex-row">
+            <FilterSearch packages={packages} />
             <TourCardsSarch searchParams={searchParams} packages={packages} />
           </div>
         </div>

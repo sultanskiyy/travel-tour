@@ -17,8 +17,11 @@ export default async function getData({ url }: GetDataProps) {
     });
 
     if (!res.ok) {
-      let errorText = "";
+      if (res.status === 429) {
+        return [];
+      }
 
+      let errorText = "";
       try {
         errorText = await res.text();
       } catch {
