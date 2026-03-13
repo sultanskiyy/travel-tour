@@ -1,125 +1,92 @@
 "use client";
 
-import { useState } from "react";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
-import type { DestinationType } from "@/types/DestinationType";
+import { useState } from "react";
 
-type Props = {
-  destinations: DestinationType[];
+type DestinationItem = {
+  id: number | string;
+  title: string;
+  image: string;
+  href?: string;
 };
 
-const DestinationsSection = ({ destinations = [] }: Props) => {
-  const [showAll, setShowAll] = useState(false);
+type Props = {
+  destinations?: DestinationItem[];
+};
 
-  const visibleDestinations = showAll ? destinations : destinations.slice(0, 4);
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
 
-  // Helper function to validate image URL
-  const getValidImageUrl = (
-    image?: string,
-    coverImage?: string,
-    icon?: string
-  ): string => {
-    const url = image || coverImage || icon;
-    if (url && url.trim() && (url.startsWith("http://") || url.startsWith("https://"))) {
-      return url;
-    }
-    return "/placeholder.jpg";
-  };
+function DestinationCard({ item }: { item: DestinationItem }) {
+  const [imgSrc, setImgSrc] = useState(item.image || FALLBACK_IMAGE);
 
   return (
-    <section className="bg-white py-24">
-      <Container className="px-5">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          <div className="max-w-xl">
-            <p className="text-emerald-500 text-sm mb-3 font-medium">
-              Next Adventure
-            </p>
+    <Link
+      href={item.href || "#"}
+      className="group block overflow-hidden rounded-2xl"
+    >
+      <div className="relative h-[260px] w-full bg-gray-200">
+        <Image
+          src={imgSrc}
+          alt={item.title}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, 33vw"
+          onError={() => {
+            if (imgSrc !== FALLBACK_IMAGE) {
+              setImgSrc(FALLBACK_IMAGE);
+            }
+          }}
+        />
 
-            <h2 className="text-4xl md:text-5xl font-extrabold text-black leading-tight">
-              Travel Destinations <br /> Available Worldwide
+        <div className="absolute inset-0 bg-black/25 transition-colors duration-300 group-hover:bg-black/35" />
+
+        <div className="absolute bottom-0 left-0 w-full p-5">
+          <h3 className="text-xl font-semibold text-white drop-shadow-md">
+            {item.title}
+          </h3>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+export default function DestinationsSection({ destinations = [] }: Props) {
+  const safeDestinations = destinations.map((item, index) => ({
+    id: item.id ?? index,
+    title: item.title || "Destination",
+    image: item.image || FALLBACK_IMAGE,
+    href: item.href || "#",
+  }));
+
+  return (
+    <section className="py-16">
+      <Container className="px-4 md:px-6">
+        <div className="mb-10 flex items-end justify-between gap-4">
+          <div>
+            <p className="mb-2 text-sm font-medium text-emerald-500">
+              Popular destinations
+            </p>
+            <h2 className="text-3xl font-bold text-black md:text-4xl">
+              Explore Amazing Places
             </h2>
-
-            <p className="text-gray-500 text-sm mt-4 leading-6">
-              We have compiled a list of top destinations across the globe,
-              scoured the world for the most alluring and fascinating places to
-              visit. From beaches to mountains and vibrant cities.
-            </p>
           </div>
-
-          <div className="hidden lg:block" />
         </div>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {visibleDestinations.map((item) => {
-            const imgSrc = getValidImageUrl(item.image, item.cover_image, item.icon);
-
-            return (
-              <Link
-                key={item.id}
-                href={`/destination/${item.slug || item.id}`}
-                className="group relative h-[290px] rounded-2xl overflow-hidden bg-gray-200 shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_18px_50px_rgba(0,0,0,0.16)] transition-all duration-300"
-              >
-                <Image
-                  src={imgSrc}
-                  alt={item.name_uz || item.name || "Destination"}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.10]"
-                  sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 260px"
-                  priority={false}
-                  onError={(result) => {
-                    result.target.src = "/placeholder.jpg";
-                  }}
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent transition-opacity duration-300" />
-
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_45%)]" />
-
-                <div className="absolute bottom-6 left-0 right-0 px-5 text-center text-white">
-                  <h3 className="text-xl font-extrabold drop-shadow-[0_8px_18px_rgba(0,0,0,0.55)]">
-                    {item.name_uz || item.name || "Destination"}
-                  </h3>
-
-                  <p className="mt-2 text-xs leading-5 opacity-95 max-w-[210px] mx-auto line-clamp-2 drop-shadow">
-                    {item.description || "No description"}
-                  </p>
-
-                  <div className="mt-4 flex justify-center">
-                    <span className="h-[3px] w-10 rounded-full bg-white/65 group-hover:bg-emerald-400 transition" />
-                  </div>
-                </div>
-
-                <div className="absolute left-4 top-4">
-                  <span className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold text-white/90 backdrop-blur-md bg-white/15 border border-white/20">
-                    Explore
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-
-          {destinations.length === 0 && (
-            <div className="col-span-full text-center text-sm text-gray-400 py-10">
-              Hozircha destination yoq...
-            </div>
-          )}
-        </div>
-
-        {destinations.length > 4 && (
-          <div className="mt-12 flex justify-center">
-            <button
-              onClick={() => setShowAll((prev) => !prev)}
-              className="rounded-md bg-emerald-500 px-8 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600"
-            >
-              {showAll ? "Show Less" : "Learn More"}
-            </button>
+        {safeDestinations.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {safeDestinations.map((item) => (
+              <DestinationCard key={item.id} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl bg-gray-100 p-10 text-center text-gray-500">
+            No destinations found
           </div>
         )}
       </Container>
     </section>
   );
-};
-
-export default DestinationsSection;
+}
