@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import FilterSearch from "@/components/FilterSearch";
 import Searchsweger from "@/components/Searchsweger";
 import TourCardsSarch from "@/components/TourCardsSarch";
@@ -20,7 +21,16 @@ export default async function Page({ searchParams }: Props) {
       <section className="bg-[#f5f5f5] py-16">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <div className="flex flex-col items-start gap-10 lg:flex-row">
-            <FilterSearch packages={packages} />
+            <Suspense
+              fallback={
+                <div className="w-full max-w-[350px] rounded-[20px] bg-[#f3f3f3] p-8">
+                  <h2 className="text-[24px] font-bold text-black">Filters</h2>
+                </div>
+              }
+            >
+              <FilterSearch packages={packages} />
+            </Suspense>
+
             <TourCardsSarch searchParams={searchParams} packages={packages} />
           </div>
         </div>

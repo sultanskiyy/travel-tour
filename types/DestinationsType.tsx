@@ -1,5 +1,4 @@
 export interface DestinationsType {
-  id: string;
   created_at: string;
 
   title: string;
@@ -40,4 +39,8 @@ export interface DestinationsType {
   is_active: boolean;
 
   updated_at: number;
-}
+  image?: string;
+  name?: string;
+  id: number | string;
+  [key: string]: unknown;
+};

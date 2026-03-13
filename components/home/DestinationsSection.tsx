@@ -40,9 +40,7 @@ function DestinationCard({ item }: { item: DestinationItem }) {
             }
           }}
         />
-
         <div className="absolute inset-0 bg-black/25 transition-colors duration-300 group-hover:bg-black/35" />
-
         <div className="absolute bottom-0 left-0 w-full p-5">
           <h3 className="text-xl font-semibold text-white drop-shadow-md">
             {item.title}
@@ -54,30 +52,21 @@ function DestinationCard({ item }: { item: DestinationItem }) {
 }
 
 export default function DestinationsSection({ destinations = [] }: Props) {
-  const safeDestinations = destinations.map((item, index) => ({
-    id: item.id ?? index,
-    title: item.title || "Destination",
-    image: item.image || FALLBACK_IMAGE,
-    href: item.href || "#",
-  }));
-
   return (
     <section className="py-16">
       <Container className="px-4 md:px-6">
-        <div className="mb-10 flex items-end justify-between gap-4">
-          <div>
-            <p className="mb-2 text-sm font-medium text-emerald-500">
-              Popular destinations
-            </p>
-            <h2 className="text-3xl font-bold text-black md:text-4xl">
-              Explore Amazing Places
-            </h2>
-          </div>
+        <div className="mb-10">
+          <p className="mb-2 text-sm font-medium text-emerald-500">
+            Popular destinations
+          </p>
+          <h2 className="text-3xl font-bold text-black md:text-4xl">
+            Explore Amazing Places
+          </h2>
         </div>
 
-        {safeDestinations.length > 0 ? (
+        {destinations.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {safeDestinations.map((item) => (
+            {destinations.map((item) => (
               <DestinationCard key={item.id} item={item} />
             ))}
           </div>

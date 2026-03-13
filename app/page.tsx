@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import getData from "@/service/api";
 
 import type { CategoryType } from "@/types/CategoryType";
@@ -14,19 +11,42 @@ import DestinationsSection from "@/components/home/DestinationsSection";
 import AdventureSection from "@/components/home/AdventureSection";
 import VideoPartnersSection from "@/components/home/VideoPartnersSection";
 
-export default function HomePage() {
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [destinations, setDestinations] = useState<DestinationType[]>([]);
+function pickString(obj: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = obj[key];
+    if (typeof value === "string" && value.trim() !== "") {
+      return value;
+    }
+  }
+  return "";
+}
 
-  useEffect(() => {
-    getData({ url: "category" }).then((data) => {
-      setCategories(Array.isArray(data) ? (data as CategoryType[]) : []);
-    });
+export default async function HomePage() {
+  const [categoryResponse, destinationResponse] = await Promise.all([
+    getData({ url: "category" }),
+    getData({ url: "destination" }),
+  ]);
 
-    getData({ url: "destination" }).then((data) => {
-      setDestinations(Array.isArray(data) ? (data as DestinationType[]) : []);
-    });
-  }, []);
+  const categories: CategoryType[] = Array.isArray(categoryResponse)
+    ? (categoryResponse as CategoryType[])
+    : [];
+
+  const destinations: DestinationType[] = Array.isArray(destinationResponse)
+    ? (destinationResponse as DestinationType[])
+    : [];
+
+  const mappedDestinations = destinations.map((item) => {
+    const raw = item as Record<string, unknown>;
+
+    return {
+      id: String(raw.id ?? ""),
+      title:
+        pickString(raw, ["title_uz", "title", "name_uz", "name"]) ||
+        "Destination",
+      image: pickString(raw, ["cover_image", "image"]),
+      href: `/destination/${String(raw.id ?? "")}`,
+    };
+  });
 
   return (
     <>
@@ -34,7 +54,7 @@ export default function HomePage() {
       <CategoryToursSection categories={categories} />
       <ToursSection />
       <VacationSearchSection />
-      <DestinationsSection destinations={destinations} />
+      <DestinationsSection destinations={mappedDestinations} />
       <AdventureSection />
       <VideoPartnersSection />
     </>
