@@ -34,7 +34,7 @@ export default function Header() {
                         </Link>
                     </div>
 
-                    <nav className="hidden md:flex items-center justify-center gap-6 text-sm text-gray-600 whitespace-nowrap">
+                    <nav className="hidden md:flex items-center justify-center gap-6 text-sm text-gray-800 whitespace-nowrap">
                         <Link href="/" className="hover:text-emerald-500 transition">
                             Home
                         </Link>
@@ -50,7 +50,7 @@ export default function Header() {
                         </Link>
                         <span className="text-emerald-400">:</span>
 
-                        <Link href="/shop" className="hover:text-emerald-500 transition">
+                        <Link href="/filter" className="hover:text-emerald-500 transition">
                             Shop
                         </Link>
                         <span className="text-emerald-400">:</span>
@@ -86,7 +86,7 @@ export default function Header() {
                 className={`md:hidden overflow-hidden border-t bg-white transition-[max-height] duration-300 ${open ? "max-h-96" : "max-h-0"
                     }`}
             >
-                <div className="px-6 py-4 space-y-4 text-sm text-gray-700">
+                <div className="px-6 py-4 space-y-4 text-sm text-gray-800">
                     <Link onClick={() => setOpen(false)} href="/" className="block">
                         Home
                     </Link>

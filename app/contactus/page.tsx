@@ -1,17 +1,16 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Container from "@/components/Container";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope } from "react-icons/fa";
 
 export default function ContactUs() {
   const [loading, setLoading] = useState<boolean>(false);
   const [ok, setOk] = useState<string | null>(null);
-  const [err, setErr] = useState<string | null>(null);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault();
     setOk(null);
-    setErr(null);
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
@@ -33,12 +32,8 @@ export default function ContactUs() {
 
       setOk("Message sent ✅");
       (e.currentTarget as HTMLFormElement).reset();
-    } catch (caught) {
-      const message =
-        caught instanceof Error
-          ? caught.message
-          : "Something went wrong";
-      setErr(message);
+    } catch {
+      setOk(null);
     } finally {
       setLoading(false);
     }
@@ -64,7 +59,7 @@ export default function ContactUs() {
       </section>
 
       <section className="py-12">
-        <div className="max-w-330 mx-auto px-4 lg:pb-60 sm:px-6">
+        <Container className="px-4 lg:pb-60 sm:px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="flex gap-4">
               <div className="w-12 h-12 rounded-full bg-emerald-50 grid place-items-center">
@@ -94,7 +89,9 @@ export default function ContactUs() {
                 <FaPhoneAlt className="text-emerald-500" />
               </div>
               <div className="text-sm">
-                <p className="font-semibold text-gray-900 mb-3">Give us a call</p>
+                <p className="font-semibold text-gray-900 mb-3">
+                  Give us a call
+                </p>
 
                 <p className="text-gray-500 text-xs mb-1 font-semibold">
                   Mobile Number
@@ -121,7 +118,9 @@ export default function ContactUs() {
                   Write for anything
                 </p>
 
-                <p className="text-gray-500 text-xs mb-1 font-semibold">quotes</p>
+                <p className="text-gray-500 text-xs mb-1 font-semibold">
+                  quotes
+                </p>
                 <p className="text-gray-400 text-xs leading-5">
                   quote@travel.com and information.
                 </p>
@@ -144,7 +143,7 @@ export default function ContactUs() {
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
 
       <section className="relative">
@@ -158,10 +157,8 @@ export default function ContactUs() {
           />
         </div>
 
-        {/* ✅ FIX: map drag ishlashi uchun wrapper click-through */}
         <div className="absolute left-0 right-0 top-0 pointer-events-none">
-          <div className="max-w-330 mx-auto px-4 sm:px-6">
-            {/* ✅ FIX: form o'zi ishlashi uchun pointer-events-auto */}
+          <Container className="px-4 sm:px-6">
             <div className="-translate-y-56 md:-translate-y-64 bg-gray-100 rounded-2xl shadow-xl p-8 md:p-12 max-w-3xl mx-auto z-10 relative pointer-events-auto">
               <p className="text-emerald-500 text-sm text-center mb-2">
                 Your Next Trip
@@ -209,12 +206,9 @@ export default function ContactUs() {
                 {ok && (
                   <p className="text-center text-sm text-emerald-600">{ok}</p>
                 )}
-                {err && (
-                  <p className="text-center text-sm text-red-500">{err}</p>
-                )}
               </form>
             </div>
-          </div>
+          </Container>
         </div>
       </section>
     </div>
