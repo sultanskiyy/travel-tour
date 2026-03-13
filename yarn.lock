@@ -2275,15 +2275,22 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7cb1e565da58c707f014eeacca346fc5cdc316d4
 swiper@^12.1.2:
   version "12.1.2"
-  resolved "https://registry.yarnpkg.com/swiper/-/swiper-12.1.2.tgz#39eaad0c088def66a7eb8f6bae1439384586ab90"
+  resolved "https://registry.npmjs.org/swiper/-/swiper-12.1.2.tgz"
   integrity sha512-4gILrI3vXZqoZh71I1PALqukCFgk+gpOwe1tOvz5uE9kHtl2gTDzmYflYCwWvR4LOvCrJi6UEEU+gnuW5BtkgQ==
 
+<<<<<<< HEAD
 tailwindcss@4.2.1, tailwindcss@^4:
 =======
 tailwindcss@^4, tailwindcss@4.2.1:
 >>>>>>> 74a55e893c2d7fed69e045fdfcdbe37b4e7dded4
+=======
+tailwindcss@^4, tailwindcss@4.2.1:
+>>>>>>> 7cb1e565da58c707f014eeacca346fc5cdc316d4
   version "4.2.1"
 
 tapable@^2.3.0:
