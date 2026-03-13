@@ -6,7 +6,7 @@ const HeroSection = () => {
   return (
     <section
       className="relative mt-17 w-full min-h-130 md:min-h-162.5 bg-cover bg-center bg-no-repeat flex items-center"
-      style={{ backgroundImage: "url('/Travel-Rule-Compliance.webp')" }}
+      style={{ backgroundImage: "url('/travel.jpg')" }}
     >
       <div className="absolute inset-0 bg-black/40" />
 

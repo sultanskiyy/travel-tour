@@ -5,6 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+
+import "swiper/css";
+
 type DestinationItem = {
   id: number | string;
   title: string;
@@ -27,24 +32,23 @@ function DestinationCard({ item }: { item: DestinationItem }) {
       href={item.href || "#"}
       className="group block overflow-hidden rounded-2xl"
     >
-      <div className="relative h-[260px] w-full bg-gray-200">
+      <div className="relative h-[320px] w-full bg-gray-200 rounded-2xl overflow-hidden">
         <Image
           src={imgSrc}
           alt={item.title}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 33vw"
-          onError={() => {
-            if (imgSrc !== FALLBACK_IMAGE) {
-              setImgSrc(FALLBACK_IMAGE);
-            }
-          }}
+          quality={100}
+          sizes="(max-width:768px) 100vw, (max-width:1024px) 50vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-black/25 transition-colors duration-300 group-hover:bg-black/35" />
-        <div className="absolute bottom-0 left-0 w-full p-5">
-          <h3 className="text-xl font-semibold text-white drop-shadow-md">
-            {item.title}
-          </h3>
+
+        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+
+        <div className="absolute bottom-6 left-6 text-white">
+          <h3 className="text-2xl font-bold">{item.title}</h3>
+          <p className="text-sm opacity-90">
+            Experience the ancient history & beaches
+          </p>
         </div>
       </div>
     </Link>
@@ -59,22 +63,39 @@ export default function DestinationsSection({ destinations = [] }: Props) {
           <p className="mb-2 text-sm font-medium text-emerald-500">
             Popular destinations
           </p>
-          <h2 className="text-3xl font-bold text-black md:text-4xl">
+
+          <h2 className="text-3xl font-bold md:text-4xl">
             Explore Amazing Places
           </h2>
         </div>
 
-        {destinations.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {destinations.map((item) => (
-              <DestinationCard key={item.id} item={item} />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-2xl bg-gray-100 p-10 text-center text-gray-500">
-            No destinations found
-          </div>
-        )}
+        <Swiper
+          modules={[Autoplay]}
+          spaceBetween={20}
+          slidesPerView={4}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+            },
+            640: {
+              slidesPerView: 2,
+            },
+            1024: {
+              slidesPerView: 4,
+            },
+          }}
+        >
+          {destinations.map((item) => (
+            <SwiperSlide key={item.id}>
+              <DestinationCard item={item} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </Container>
     </section>
   );
