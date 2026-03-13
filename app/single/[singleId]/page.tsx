@@ -7,32 +7,13 @@ import { FaMapSigns } from "react-icons/fa"
 import { GoClock } from "react-icons/go"
 import { MdOutlineMan } from "react-icons/md"
 import getData from "@/service/api"
+import { TourType } from "@/types/TourType"
 
-type Tour = {
-    id: string
-    title: string
-    title_uz: string
-    description: string
-    includes: string[]
-    excludes: string[]
-    itinerary: string
-    duration_days: number
-    duration_nights: number
-    difficulty: string
-    base_price: number
-    currency: string
-    discount_pct: number
-    cover_image: string
-    meeting_point: string
-    meeting_lat: number
-    meeting_lng: number
-    min_people: number
-    max_people: number
-}
+
 
 export default function TourPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
-    const [tour, setTour] = useState<Tour | null>(null)
+    const [tour, setTour] = useState<TourType | null>(null)
     const [adults, setAdults] = useState(1)
     const [children, setChildren] = useState(0)
     const [healthIns, setHealthIns] = useState(false)
@@ -40,7 +21,7 @@ export default function TourPage({ params }: { params: Promise<{ id: string }> }
 
     useEffect(() => {
         getData({ url: `tour/${id}` }).then((data) => {
-            setTour(data as Tour)
+            setTour(data as TourType)
         })
     }, [id])
     if (!tour) return <div className="flex items-center justify-center h-96 text-gray-400">Loading...</div>
@@ -58,9 +39,7 @@ export default function TourPage({ params }: { params: Promise<{ id: string }> }
                     className="object-cover"
                     priority
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-20" />
             </div>
-            
 
             {/* Tour Meta */}
             <div className="mx-auto py-6 flex flex-wrap items-center gap-6 border-b border-gray-200">
