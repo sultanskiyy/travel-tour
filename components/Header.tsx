@@ -75,9 +75,9 @@ export default function Header() {
                             {open ? <X size={22} /> : <Menu size={22} />}
                         </button>
 
-                        <button className="bg-emerald-500 cursor-pointer text-white px-4 sm:px-5 py-2 rounded-md text-sm hover:bg-emerald-600 transition">
+                        <Link href="/search" className="bg-emerald-500 cursor-pointer text-white px-4 sm:px-5 py-2 rounded-md text-sm hover:bg-emerald-600 transition">
                             Search
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
