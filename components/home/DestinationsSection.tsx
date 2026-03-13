@@ -15,6 +15,19 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
 
   const visibleDestinations = showAll ? destinations : destinations.slice(0, 4);
 
+  // Helper function to validate image URL
+  const getValidImageUrl = (
+    image?: string,
+    coverImage?: string,
+    icon?: string
+  ): string => {
+    const url = image || coverImage || icon;
+    if (url && url.trim() && (url.startsWith("http://") || url.startsWith("https://"))) {
+      return url;
+    }
+    return "/placeholder.jpg";
+  };
+
   return (
     <section className="bg-white py-24">
       <Container className="px-5">
@@ -40,8 +53,7 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {visibleDestinations.map((item) => {
-            const rawImage = item.image || item.cover_image || item.icon || "";
-            const imgSrc = rawImage && rawImage.trim() ? rawImage : "/placeholder.jpg";
+            const imgSrc = getValidImageUrl(item.image, item.cover_image, item.icon);
 
             return (
               <Link
@@ -55,6 +67,10 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.10]"
                   sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 260px"
+                  priority={false}
+                  onError={(result) => {
+                    result.target.src = "/placeholder.jpg";
+                  }}
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent transition-opacity duration-300" />
@@ -86,7 +102,7 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
 
           {destinations.length === 0 && (
             <div className="col-span-full text-center text-sm text-gray-400 py-10">
-              Hozircha destination yo‘q...
+              Hozircha destination yoq...
             </div>
           )}
         </div>
