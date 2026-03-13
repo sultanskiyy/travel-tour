@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+<<<<<<< HEAD
 
     remotePatterns: [
       { protocol: "https", hostname: "www.shms.com" },
@@ -18,6 +19,24 @@ const nextConfig: NextConfig = {
     ],
   },
 
+=======
+    domains: [
+      "www.shms.com",
+      "tse2.mm.bing.net",
+      "images.pexels.com",
+      "res.cloudinary.com",
+      "i.ytimg.com",
+      "adventourss.com",
+      "images.unsplash.com" ,
+      "next.config.js" ,
+      "cdn.properties.emaar.com",
+      "cdn.properties.emaar.com"  ,
+      "i.pinimg.com",
+      "tse3.mm.bing.net",
+      
+      ]
+  }
+>>>>>>> ffb59e609affc476c2fe8d3f20e9af6ac3969308
 };
 
 export default nextConfig;
