@@ -5,15 +5,7 @@ import { useState } from "react";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
-
-type DestinationType = {
-  id: string;
-  name: string;
-  name_uz: string;
-  slug: string;
-  description: string;
-  image: string;
-};
+import type { DestinationType } from "@/types/DestinationType";
 
 type Props = {
   destinations: DestinationType[];
@@ -49,20 +41,18 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {visibleDestinations.map((item) => {
-            const imgSrc = item.image?.trim() ? item.image : "/placeholder.jpg";
+            const rawImage = item.image || item.cover_image || item.icon || "";
+            const imgSrc = rawImage && rawImage.trim() ? rawImage : "/placeholder.jpg";
 
             return (
               <Link
                 key={item.id}
-                href={`/destination/${item.slug}`}
-                className="group relative h-[290px] rounded-2xl overflow-hidden
-                bg-gray-200 shadow-[0_10px_30px_rgba(0,0,0,0.08)]
-                hover:shadow-[0_18px_50px_rgba(0,0,0,0.16)]
-                transition-all duration-300"
+                href={`/destination/${item.slug || item.id}`}
+                className="group relative h-[290px] rounded-2xl overflow-hidden bg-gray-200 shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_18px_50px_rgba(0,0,0,0.16)] transition-all duration-300"
               >
                 <Image
                   src={imgSrc}
-                  alt={item.name_uz || item.name}
+                  alt={item.name_uz || item.name || "Destination"}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.10]"
                   sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 260px"
@@ -74,11 +64,11 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
 
                 <div className="absolute bottom-6 left-0 right-0 px-5 text-center text-white">
                   <h3 className="text-xl font-extrabold drop-shadow-[0_8px_18px_rgba(0,0,0,0.55)]">
-                    {item.name_uz || item.name}
+                    {item.name_uz || item.name || "Destination"}
                   </h3>
 
                   <p className="mt-2 text-xs leading-5 opacity-95 max-w-[210px] mx-auto line-clamp-2 drop-shadow">
-                    {item.description}
+                    {item.description || "No description"}
                   </p>
 
                   <div className="mt-4 flex justify-center">
@@ -91,8 +81,6 @@ const DestinationsSection = ({ destinations = [] }: Props) => {
                     Explore
                   </span>
                 </div>
-
-                <div className="absolute inset-0 rounded-2xl ring-0 group-focus-visible:ring-4 group-focus-visible:ring-emerald-400/60" />
               </Link>
             );
           })}
