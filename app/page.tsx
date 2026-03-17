@@ -52,7 +52,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
-      <CategoryToursSection categories={categories} />
+      {/* <CategoryToursSection categories={categories} /> */}
       <ToursSection />
       <VacationSearchSection />
       <DestinationsSection destinations={mappedDestinations} />

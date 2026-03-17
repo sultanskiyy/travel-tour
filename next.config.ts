@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "adventourss.com" },
       { protocol: "https", hostname: "thumbs.dreamstime.com" },
       { protocol: "https", hostname: "x8ki-letl-twmt.n7.xano.io" },
+      { protocol: "https", hostname: "as2.ftcdn.net" },
     ],
   },
 };
