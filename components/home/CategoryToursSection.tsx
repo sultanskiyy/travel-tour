@@ -46,7 +46,7 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
   return (
     <Link
       href={`/category/${id}`}
-      className="group relative block h-[120px] w-full overflow-hidden rounded-xl"
+      className="group relative block h-30 w-full overflow-hidden rounded-xl"
     >
       <Image
         fill
