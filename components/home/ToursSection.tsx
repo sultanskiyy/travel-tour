@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,27 +30,34 @@ interface ToursSectionProps {
   tours?: PackageType[];
 }
 
-const ToursSection = ({ tours: initialTours }: ToursSectionProps = {}) => {
-  const [packages, setPackages] = useState<PackageType[]>(initialTours || []);
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
 
-  useEffect(() => {
-    fetch("https://x8ki-letl-twmt.n7.xano.io/api:qNrTfAaz/package")
-      .then((res) => res.json())
-      .then((data) => {
-        setPackages(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => {
-        console.error("Package fetch error:", err);
-        setPackages([]);
-      });
-  }, []);
+function getSafeImageSrc(value?: string | null) {
+  if (!value) return FALLBACK_IMAGE;
 
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed === "string") return FALLBACK_IMAGE;
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+
+  return FALLBACK_IMAGE;
+}
+
+const ToursSection = ({ tours = [] }: ToursSectionProps) => {
   return (
     <section className="py-8">
       <Container className="mt-14 px-4 md:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 place-items-center">
-          {packages
-            .filter((item) => item.is_active)
+        <div className="grid grid-cols-1 place-items-center gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {tours
+            .filter((item) => item?.is_active)
             .map((item) => {
               const hasSale =
                 item.discount_pct > 0 || item.original_price > item.total_price;
@@ -63,8 +69,8 @@ const ToursSection = ({ tours: initialTours }: ToursSectionProps = {}) => {
                 >
                   <div className="relative h-56 w-full">
                     <Image
-                      src={item.cover_image}
-                      alt={item.title_uz || item.title}
+                      src={getSafeImageSrc(item.cover_image)}
+                      alt={item.title_uz || item.title || "Tour"}
                       fill
                       className="object-cover"
                       sizes="(max-width: 768px) 90vw, 360px"
@@ -81,7 +87,7 @@ const ToursSection = ({ tours: initialTours }: ToursSectionProps = {}) => {
                     <div className="rounded-[10px] bg-[#f1f1f1] px-5 py-4 shadow-sm">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3 text-[15px] text-gray-500">
-                          <FaClock className="text-cyan-500 text-[13px]" />
+                          <FaClock className="text-[13px] text-cyan-500" />
                           <span>{item.duration_days} Days</span>
                         </div>
 
@@ -97,13 +103,13 @@ const ToursSection = ({ tours: initialTours }: ToursSectionProps = {}) => {
                     </h3>
 
                     <div className="mt-3 flex items-center gap-2 text-[15px] text-gray-500">
-                      <FaMapMarkerAlt className="text-cyan-500 text-[13px]" />
+                      <FaMapMarkerAlt className="text-[13px] text-cyan-500" />
                       <span>{item.departure_city}</span>
                     </div>
 
                     <div className="my-5 h-px w-full bg-[#dddddd]" />
 
-                    <p className="text-[15px] leading-8 text-gray-500 line-clamp-3">
+                    <p className="line-clamp-3 text-[15px] leading-8 text-gray-500">
                       {item.description}
                     </p>
 

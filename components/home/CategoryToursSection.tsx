@@ -13,14 +13,35 @@ type Props = {
 type CategoryCardProps = {
   id: number | string;
   name: string;
-  image: string; // faqat string, default bilan beramiz
+  image?: string | null;
 };
 
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
+
+function getSafeImageSrc(value?: string | null) {
+  if (!value) return null;
+
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed === "string") return null;
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+
+  return null;
+}
+
 function CategoryCard({ id, name, image }: CategoryCardProps) {
-  const [imgSrc, setImgSrc] = useState(
-    image ||
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
-  );
+  const safeImage = getSafeImageSrc(image);
+  const [imgSrc, setImgSrc] = useState(safeImage || FALLBACK_IMAGE);
+
+  if (!safeImage) return null;
 
   return (
     <Link
@@ -33,14 +54,10 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
         alt={name}
         className="object-cover transition-transform duration-300 group-hover:scale-110"
         sizes="(max-width:768px) 100vw, 360px"
-        onError={() =>
-          setImgSrc(
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
-          )
-        }
+        onError={() => setImgSrc(FALLBACK_IMAGE)}
       />
 
-      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
         <span className="text-lg font-semibold text-white">{name}</span>
       </div>
     </Link>
@@ -48,10 +65,10 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
 }
 
 const CategoryToursSection = ({ categories = [] }: Props) => {
-  // validCategories: faqat URL bo‘lgan rasm bilan
-  const validCategories = categories.filter(
-    (el) => typeof el.icon === "string" && el.icon,
-  );
+  const validCategories = categories.filter((el) => {
+    const icon = typeof el.icon === "string" ? el.icon.trim() : "";
+    return !!el.id && !!el.name_uz && !!icon && icon !== "string";
+  });
 
   return (
     <section className="py-16">
@@ -73,11 +90,8 @@ const CategoryToursSection = ({ categories = [] }: Props) => {
             <CategoryCard
               key={el.id}
               id={el.id}
-              name={el.name_uz || "No Name"} // default name
-              image={
-                el.icon ||
-                "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80"
-              } // default image
+              name={el.name_uz || "No Name"}
+              image={el.icon}
             />
           ))}
         </div>

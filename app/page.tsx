@@ -9,8 +9,9 @@ import VacationSearchSection from "@/components/home/VacationSearchSection";
 import DestinationsSection from "@/components/home/DestinationsSection";
 import AdventureSection from "@/components/home/AdventureSection";
 import VideoPartnersSection from "@/components/home/VideoPartnersSection";
-
-import PricingPackages from "@/components/home/PricingPackages"; // ✅ PricingPackages qo‘shildi
+import PricingPackages from "@/components/home/PricingPackages";
+import TravelTestimonials from "@/components/home/TravelTestimonials";
+import AdventurePromoSection from "@/components/home/AdventurePromoSection";
 
 function pickString(obj: Record<string, unknown>, keys: string[]): string {
   for (const key of keys) {
@@ -23,10 +24,12 @@ function pickString(obj: Record<string, unknown>, keys: string[]): string {
 }
 
 export default async function HomePage() {
-  const [categoryResponse, destinationResponse] = await Promise.all([
-    getData({ url: "category" }).catch(() => []),
-    getData({ url: "destination" }).catch(() => []),
-  ]);
+  const categoryResponse = await getData({ url: "category" }).catch(() => []);
+  const destinationResponse = await getData({ url: "destination" }).catch(() => []);
+  const toursResponse = await getData({ url: "package" }).catch(() => []);
+  const xanoResponse = await getData({
+    url: "https://x8ki-letl-twmt.n7.xano.io/api:qNrTfAaz",
+  }).catch(() => []);
 
   const categories: CategoryType[] = Array.isArray(categoryResponse)
     ? (categoryResponse as CategoryType[])
@@ -36,6 +39,16 @@ export default async function HomePage() {
     ? (destinationResponse as DestinationType[])
     : [];
 
+  const tours = Array.isArray(toursResponse) ? toursResponse : [];
+
+  const xanoItems = Array.isArray(xanoResponse)
+    ? xanoResponse
+    : Array.isArray((xanoResponse as { data?: unknown[] })?.data)
+      ? ((xanoResponse as { data?: unknown[] }).data ?? [])
+      : Array.isArray((xanoResponse as { items?: unknown[] })?.items)
+        ? ((xanoResponse as { items?: unknown[] }).items ?? [])
+        : [];
+
   const mappedDestinations = destinations.map((item) => {
     const raw = item as Record<string, unknown>;
 
@@ -44,7 +57,9 @@ export default async function HomePage() {
       title:
         pickString(raw, ["title_uz", "title", "name_uz", "name"]) ||
         "Destination",
-      image: pickString(raw, ["cover_image", "image"]) || "/images/default-destination.jpg",
+      image:
+        pickString(raw, ["cover_image", "image"]) ||
+        "/images/default-destination.jpg",
       href: `/destination/${String(raw.id ?? "")}`,
     };
   });
@@ -53,11 +68,13 @@ export default async function HomePage() {
     <>
       <HeroSection />
       <CategoryToursSection categories={categories} />
-      <ToursSection />
+      <ToursSection tours={tours} />
       <VacationSearchSection />
       <DestinationsSection destinations={mappedDestinations} />
       <AdventureSection />
+      <AdventurePromoSection promoData={xanoItems} />
       <VideoPartnersSection />
+      <TravelTestimonials testimonials={xanoItems} />
       <PricingPackages />
     </>
   );
