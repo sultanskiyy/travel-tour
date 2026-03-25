@@ -52,14 +52,14 @@ export default async function HomePage() {
 
   return (
     <>
-        <HeroSection />
-        <CategoryToursSection categories={categories} />
-        <HomeToursSection />
-        <VacationSearchSection />
-        <DestinationsSection destinations={mappedDestinations} />
-        <AdventureSection />
-        <VideoPartnersSection />
-        <PricingPackages />
+      <HeroSection />
+      <CategoryToursSection categories={categories} />
+      <HomeToursSection />
+      <VacationSearchSection />
+      <DestinationsSection destinations={mappedDestinations} />
+      <AdventureSection />
+      <VideoPartnersSection />
+      <PricingPackages />
     </>
   );
 }

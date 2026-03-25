@@ -368,6 +368,8 @@
 
     import { Suspense } from "react"
 import TourPageClient from "./SingleTour"
+export const dynamic = "force-dynamic";
+
 
 export default function Page() {
   return (

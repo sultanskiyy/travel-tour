@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { FormEvent, useState } from "react";
 import Container from "@/components/Container";

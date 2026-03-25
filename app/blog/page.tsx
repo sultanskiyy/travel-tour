@@ -1,11 +1,11 @@
+export const dynamic = "force-dynamic";
+
 import Image from "next/image";
 import LatestArticleCard from "@/components/LatestArticleCard";
 import SwiperBlog from "@/components/SwiperBlog";
 import Container from "@/components/Container";
 import getData from "@/service/api";
 import type { CategoryType } from "@/types/CategoryType";
-
-export const revalidate = 60;
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1600&q=80";
@@ -50,10 +50,7 @@ export default async function BlogPage() {
   let categories: CategoryType[] = [];
 
   try {
-    const response = await getData({
-      url: "category",
-    });
-
+    const response = await getData({ url: "category" });
     categories = Array.isArray(response) ? (response as CategoryType[]) : [];
   } catch (error) {
     console.error("BLOG PAGE API ERROR:", error);
@@ -61,7 +58,7 @@ export default async function BlogPage() {
   }
 
   const validCategories = categories.filter(
-    (item) => item?.id && safeText(item.name_uz)
+    (item) => item?.id && safeText(item.name_uz || item.name),
   );
 
   const galleryImages = validCategories.slice(3, 5);
@@ -135,8 +132,8 @@ export default async function BlogPage() {
               <p>
                 There are so many places to explore and so many adventures
                 waiting for you. What makes a great travel destination depends
-                on what kind of traveler you are, whether it is culture,
-                natural beauty, or history that interests you most.
+                on what kind of traveler you are, whether it is culture, natural
+                beauty, or history that interests you most.
               </p>
 
               <p>
@@ -184,21 +181,27 @@ export default async function BlogPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {galleryImages.map((item) => (
-                <div
-                  key={String(item.id)}
-                  className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-[0_12px_34px_rgba(0,0,0,0.06)]"
-                >
-                  <Image
-                    src={getSafeImageSrc(item.icon)}
-                    alt={safeText(item.name_uz, "Gallery image")}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            {galleryImages.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {galleryImages.map((item) => (
+                  <div
+                    key={String(item.id)}
+                    className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-[0_12px_34px_rgba(0,0,0,0.06)]"
+                  >
+                    <Image
+                      src={getSafeImageSrc(item.icon)}
+                      alt={safeText(item.name_uz || item.name, "Gallery image")}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-500">
+                Gallery topilmadi
+              </div>
+            )}
 
             <div>
               <h2 className="text-[20px] font-bold text-zinc-950">
@@ -206,8 +209,8 @@ export default async function BlogPage() {
               </h2>
 
               <p className="mt-3 text-[11px] leading-[1.95] text-zinc-500 md:text-[12px]">
-                Discover destinations that fit both your business needs and
-                your dream vacation plans.
+                Discover destinations that fit both your business needs and your
+                dream vacation plans.
               </p>
             </div>
 
@@ -232,17 +235,26 @@ export default async function BlogPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {latestArticles.map((article) => (
-                <LatestArticleCard
-                  key={String(article.id)}
-                  id={article.id}
-                  image={getSafeImageSrc(article.icon)}
-                  title={safeText(article.description, "Untitled article")}
-                  date={safeText(article.name_uz, "May 2025")}
-                />
-              ))}
-            </div>
+            {latestArticles.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {latestArticles.map((article) => (
+                  <LatestArticleCard
+                    key={String(article.id)}
+                    id={article.id}
+                    image={getSafeImageSrc(article.icon)}
+                    title={safeText(
+                      article.description || article.name_uz || article.name,
+                      "Untitled article",
+                    )}
+                    date={safeText(article.name_uz || article.name, "May 2025")}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-500">
+                Articles topilmadi
+              </div>
+            )}
           </article>
         </Container>
       </section>
