@@ -1,152 +1,96 @@
-"use client";
-
-import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  FaClock,
-  FaEnvelope,
-  FaShareAlt,
-  FaMapMarkerAlt,
-} from "react-icons/fa";
+import type { PackageType } from "@/types/PackageTypes";
+import getData from "@/service/api";
 
-type PackageType = {
-  id: string;
-  title: string;
-  title_uz: string;
-  title_ru: string;
-  slug: string;
-  description: string;
-  duration_days: number;
-  total_price: number;
-  original_price: number;
-  departure_city: string;
-  cover_image: string;
-  discount_pct: number;
-  is_active: boolean;
-};
-
-interface ToursSectionProps {
-  tours?: PackageType[];
+function getDurationLabel(item: PackageType): string {
+  if (item.duration_label) return item.duration_label;
+  if (typeof item.duration_days === "number")
+    return `${item.duration_days} Days`;
+  return "Unknown duration";
 }
 
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
-
-function getSafeImageSrc(value?: string | null) {
-  if (!value) return FALLBACK_IMAGE;
-
-  const trimmed = value.trim();
-
-  if (!trimmed || trimmed === "string") return FALLBACK_IMAGE;
-
-  if (
-    trimmed.startsWith("http://") ||
-    trimmed.startsWith("https://") ||
-    trimmed.startsWith("/")
-  ) {
-    return trimmed;
-  }
-
-  return FALLBACK_IMAGE;
+function getPrice(value?: number | string) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") return Number(value) || 0;
+  return 0;
 }
 
-const ToursSection = ({ tours = [] }: ToursSectionProps) => {
+export default async function ToursSection() {
+  const response = await getData({ url: "package" }).catch(() => []);
+  const packages: PackageType[] = Array.isArray(response) ? response : [];
+
+  const visiblePackages = packages.slice(0, 3);
+
   return (
-    <section className="py-8">
-      <Container className="mt-14 px-4 md:px-8">
-        <div className="grid grid-cols-1 place-items-center gap-8 md:grid-cols-2 xl:grid-cols-3">
-          {tours
-            .filter((item) => item?.is_active)
-            .map((item) => {
-              const hasSale =
-                item.discount_pct > 0 || item.original_price > item.total_price;
+    <section className="py-16">
+      <div className="mx-auto max-w-7xl px-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {visiblePackages.map((item, index) => (
+            <div
+              key={item.id ?? index}
+              className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+            >
+              <div className="relative h-[220px] w-full">
+                <Image
+                  src={item.cover_image || "/placeholder.png"}
+                  alt={item.title_uz || "tour image"}
+                  fill
+                  className="object-cover"
+                />
 
-              return (
-                <div
-                  key={item.id}
-                  className="w-full max-w-sm overflow-hidden rounded-2xl bg-[#f6f6f6] shadow-[0_12px_35px_rgba(0,0,0,0.08)]"
-                >
-                  <div className="relative h-56 w-full">
-                    <Image
-                      src={getSafeImageSrc(item.cover_image)}
-                      alt={item.title_uz || item.title || "Tour"}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 90vw, 360px"
-                    />
+                {item.is_promotion && (
+                  <span className="absolute right-4 top-4 rounded-full bg-purple-400 px-3 py-1 text-[10px] font-semibold text-white">
+                    SALE
+                  </span>
+                )}
+              </div>
 
-                    {hasSale && (
-                      <span className="absolute right-4 top-4 rounded-full bg-cyan-500 px-4 py-1.5 text-[12px] font-semibold tracking-[0.18em] text-white">
-                        SALE
+              <div className="p-5">
+                <div className="mb-4 flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-500">
+                  <span>{getDurationLabel(item)}</span>
+                  <span>✉️ ↗</span>
+                </div>
+
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {item.title_uz || "Untitled"}
+                </h3>
+
+                <p className="mt-1 text-sm text-gray-500">
+                  📍 {item.departure_city || "Unknown"}
+                </p>
+
+                <p className="mt-4 min-h-[72px] text-sm leading-6 text-gray-500">
+                  {item.description_uz || item.description || "No description"}
+                </p>
+
+                <div className="mt-6 flex items-end justify-between border-t pt-5">
+                  <Link
+                    href={`/single?id=${item.id}`}
+                    className="rounded bg-teal-400 px-5 py-2 text-sm font-medium text-white"
+                  >
+                    Details
+                  </Link>
+
+                  <div className="text-right">
+                    <p className="text-sm text-gray-400">From</p>
+                    <div className="flex items-end gap-1">
+                      <span className="text-3xl font-bold text-black">
+                        ${getPrice(item.total_price)}
                       </span>
-                    )}
-                  </div>
-
-                  <div className="p-6">
-                    <div className="rounded-[10px] bg-[#f1f1f1] px-5 py-4 shadow-sm">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3 text-[15px] text-gray-500">
-                          <FaClock className="text-[13px] text-cyan-500" />
-                          <span>{item.duration_days} Days</span>
-                        </div>
-
-                        <div className="flex items-center gap-4 text-cyan-500">
-                          <FaEnvelope className="text-[13px]" />
-                          <FaShareAlt className="text-[13px]" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <h3 className="mt-7 text-[18px] font-extrabold text-black">
-                      {item.title_uz || item.title}
-                    </h3>
-
-                    <div className="mt-3 flex items-center gap-2 text-[15px] text-gray-500">
-                      <FaMapMarkerAlt className="text-[13px] text-cyan-500" />
-                      <span>{item.departure_city}</span>
-                    </div>
-
-                    <div className="my-5 h-px w-full bg-[#dddddd]" />
-
-                    <p className="line-clamp-3 text-[15px] leading-8 text-gray-500">
-                      {item.description}
-                    </p>
-
-                    <div className="my-5 h-px w-full bg-[#dddddd]" />
-
-                    <div className="flex items-end justify-between gap-4">
-                      <Link
-                        href={`/single?id=${item.id}`}
-                        className="rounded-md bg-cyan-500 px-7 py-3 text-base font-semibold text-white transition hover:bg-cyan-600"
-                      >
-                        Details
-                      </Link>
-
-                      <div className="text-right leading-none">
-                        <p className="mb-2 text-[14px] text-gray-400">From</p>
-
-                        <div className="flex items-end justify-end gap-2">
-                          <span className="text-[20px] font-extrabold text-black">
-                            $ {item.total_price}
-                          </span>
-
-                          {item.original_price > item.total_price && (
-                            <span className="text-[14px] font-semibold text-gray-400 line-through">
-                              $ {item.original_price}
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                      {item.original_price ? (
+                        <span className="mb-1 text-xs text-gray-400 line-through">
+                          ${getPrice(item.original_price)}
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            </div>
+          ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
-};
-
-export default ToursSection;
+}

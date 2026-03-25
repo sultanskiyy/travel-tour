@@ -4,13 +4,12 @@ import type { DestinationType } from "@/types/DestinationType";
 
 import HeroSection from "@/components/home/HeroSection";
 import CategoryToursSection from "@/components/home/CategoryToursSection";
-import ToursSection from "@/components/home/ToursSection";
 import VacationSearchSection from "@/components/home/VacationSearchSection";
 import DestinationsSection from "@/components/home/DestinationsSection";
 import AdventureSection from "@/components/home/AdventureSection";
 import VideoPartnersSection from "@/components/home/VideoPartnersSection";
-
-import PricingPackages from "@/components/home/PricingPackages"; // ✅ PricingPackages qo‘shildi
+import PricingPackages from "@/components/home/PricingPackages";
+import HomeToursSection from "@/components/home/HomeToursSection";
 
 function pickString(obj: Record<string, unknown>, keys: string[]): string {
   for (const key of keys) {
@@ -44,22 +43,23 @@ export default async function HomePage() {
       title:
         pickString(raw, ["title_uz", "title", "name_uz", "name"]) ||
         "Destination",
-      image: pickString(raw, ["cover_image", "image"]) || "/images/default-destination.jpg",
+      image:
+        pickString(raw, ["cover_image", "image"]) ||
+        "/images/default-destination.jpg",
       href: `/destination/${String(raw.id ?? "")}`,
     };
   });
 
   return (
     <>
-      <HeroSection />
-      {/* <CategoryToursSection categories={categories} /> */}
-      <ToursSection />
-      <VacationSearchSection />
-      <DestinationsSection destinations={mappedDestinations} />
-      <AdventureSection />
-      <VideoPartnersSection />
-      <PricingPackages />
+        <HeroSection />
+        <CategoryToursSection categories={categories} />
+        <HomeToursSection />
+        <VacationSearchSection />
+        <DestinationsSection destinations={mappedDestinations} />
+        <AdventureSection />
+        <VideoPartnersSection />
+        <PricingPackages />
     </>
   );
 }
-    
