@@ -3,49 +3,84 @@ import LatestArticleCard from "@/components/LatestArticleCard";
 import SwiperBlog from "@/components/SwiperBlog";
 import Container from "@/components/Container";
 import getData from "@/service/api";
-import { CategoryType } from "@/types/CategoryType";
+import type { CategoryType } from "@/types/CategoryType";
 
 export const revalidate = 60;
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1600&q=80";
 
+const BLOG_BG =
+  "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=2000&q=80";
+
 const AUTHOR_AVATAR = "https://i.pravatar.cc/80?img=12";
-const FALLBACK_IMAGE = "/no-image.png";
+
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
 
 function safeText(value?: string | null, fallback = "") {
   if (!value) return fallback;
+
   const text = value.trim();
-  return text.length ? text : fallback;
+  if (!text || text === "string") return fallback;
+
+  return text;
 }
 
-export default async function Page() {
-  const categories =
-    (await getData<CategoryType[]>({
-      url: "category",
-    }).catch(() => [])) || [];
+function getSafeImageSrc(value?: string | null, fallback = FALLBACK_IMAGE) {
+  if (!value) return fallback;
 
-  const galleryImages = categories.slice(3, 5);
-  const latestArticles = categories.slice(0, 3);
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed === "string") return fallback;
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+
+  return fallback;
+}
+
+export default async function BlogPage() {
+  let categories: CategoryType[] = [];
+
+  try {
+    const response = await getData<CategoryType[]>({
+      url: "category",
+    });
+
+    categories = Array.isArray(response) ? response : [];
+  } catch (error) {
+    console.error("BLOG PAGE API ERROR:", error);
+    categories = [];
+  }
+
+  const validCategories = categories.filter(
+    (item) => item?.id && safeText(item.name_uz),
+  );
+
+  const galleryImages = validCategories.slice(3, 5);
+  const latestArticles = validCategories.slice(0, 3);
 
   return (
     <main className="bg-white">
-      {/* HERO */}
-      <section className="relative overflow-hidden pt-16 pb-22.5 md:pt-24 md:pb-32.5 lg:pt-28 lg:pb-40">
-        {/* background image */}
+      <section className="relative overflow-hidden pb-24 pt-16 md:pb-32 md:pt-24 lg:pb-40 lg:pt-28">
         <Image
-          src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=2000&q=80"
+          src={BLOG_BG}
           alt="Blog background"
           fill
           priority
           className="object-cover"
         />
 
-        {/* overlay */}
         <div className="absolute inset-0 bg-black/50" />
 
-        <Container className="relative z-10 px-9">
-          <div className="flex min-h-55 flex-col items-center justify-center text-center md:min-h-70 lg:min-h-80">
+        <Container className="relative z-10 px-4 md:px-9">
+          <div className="flex min-h-[220px] flex-col items-center justify-center text-center md:min-h-[280px] lg:min-h-[320px]">
             <h1 className="text-[34px] font-extrabold tracking-[-0.04em] text-white md:text-[48px] lg:text-[58px]">
               Plan the Perfect Vacation
             </h1>
@@ -55,7 +90,7 @@ export default async function Page() {
             </p>
 
             <div className="mt-7 flex justify-center">
-              <span className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#20c4a6] shadow-[0_10px_24px_rgba(32,196,166,0.25)]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#20c4a6] shadow-[0_10px_24px_rgba(32,196,166,0.25)]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -76,11 +111,10 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* FLOAT IMAGE */}
-      <section className="relative z-10 -mt-13.75 md:-mt-21.25 lg:-mt-26.25">
-        <Container className="px-9">
+      <section className="relative z-10 -mt-10 md:-mt-16 lg:-mt-20">
+        <Container className="px-4 md:px-9">
           <div className="overflow-hidden rounded-[10px] shadow-[0_22px_55px_rgba(15,23,42,0.10)]">
-            <div className="relative aspect-1920/613 w-full">
+            <div className="relative aspect-[1920/613] w-full">
               <Image
                 src={HERO_IMAGE}
                 alt="Vacation hero"
@@ -93,43 +127,31 @@ export default async function Page() {
         </Container>
       </section>
 
-      {/* CONTENT */}
       <section className="pb-16 pt-10">
-        <Container className="px-9">
+        <Container className="px-4 md:px-9">
           <article className="space-y-8">
-            {/* INTRO */}
             <div className="space-y-4 text-[11px] leading-[1.95] text-zinc-500 md:text-[12px]">
               <p>
-                There are so many places to explore, so many adventures waiting
-                for you. What makes a great travel destination? It depends on
-                what kind of traveler you are: whether
-                <br /> it is culture, natural beauty or history that interests
-                you most; whether your idea of fun is hiking through mountains
-                or lounging on white-sand beaches; if food is more
-                <br /> important than sights when planning an itinerary (and
-                vice versa).
+                There are so many places to explore and so many adventures
+                waiting for you. What makes a great travel destination depends
+                on what kind of traveler you are, whether it is culture, natural
+                beauty, or history that interests you most.
               </p>
 
               <p>
-                IThere are also practical considerations like cost and time
-                spent traveling from place to place and maybe even how much
-                luggage space there is in the car/plane/train
-                <br /> compartment where well be sleeping tonight! But no
-                matter what kind of traveler they are or what they are looking
-                for out of their next trip abroad, everyone should <br />{" "}
-                consider many factors before booking their flight(s).
+                There are also practical considerations like cost, time spent
+                traveling from place to place, and even how much luggage space
+                there is. No matter what kind of traveler you are, it is always
+                important to consider many factors before booking a trip.
               </p>
             </div>
 
-            {/* QUOTE */}
             <div className="rounded-lg bg-[#f7f7f7] px-6 py-7 text-center md:px-10 md:py-8">
               <p className="text-[11px] leading-[1.95] text-zinc-500 md:text-[12px]">
-                I recently used the services of thisbTravel Agency for my trip
+                I recently used the services of this travel agency for my trip
                 to Europe and I could not be happier. The team took care of
-                everything <br /> from flights to hotels to tours, making my
-                trip planning stress-free. They were very knowledgeable about
-                the destinations and gave <br /> great recommendations on things
-                to do and see.{" "}
+                everything from flights to hotels to tours, making my trip
+                planning stress-free.
               </p>
 
               <div className="mt-5 flex items-center justify-center gap-3">
@@ -150,33 +172,25 @@ export default async function Page() {
                 </div>
               </div>
             </div>
+
             <div>
-              <p>
-                <p>
-                  Our team of experienced travel experts is here to help you
-                  plan every aspect of your trip, from flights and
-                  accommodations to activities and tours. We understand that
-                  <br />
-                  everyone travel preferences are unique, which is why we take
-                  the time to get to know you and your travel style before
-                  creating a personalized itinerary. Once the project
-                  <br /> starts, it is important to check in with the handyman
-                  on a regular basis to ensure the job is being completed
-                  correctly. The homeowner should also ensure that the
-                  <br /> handyman is following safety protocols.
-                </p>
+              <p className="text-[11px] leading-[1.95] text-zinc-500 md:text-[12px]">
+                Our team of experienced travel experts is here to help you plan
+                every aspect of your trip, from flights and accommodations to
+                activities and tours. We understand that every traveler has
+                unique preferences, so we take the time to build a journey that
+                fits your style.
               </p>
             </div>
 
-            {/* GALLERY */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {galleryImages.map((item) => (
                 <div
                   key={item.id}
-                  className="relative aspect-1.25/1 overflow-hidden rounded-lg shadow-[0_12px_34px_rgba(0,0,0,0.06)]"
+                  className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-[0_12px_34px_rgba(0,0,0,0.06)]"
                 >
                   <Image
-                    src={safeText(item.icon, FALLBACK_IMAGE)}
+                    src={getSafeImageSrc(item.icon)}
                     alt={safeText(item.name_uz, "Gallery image")}
                     fill
                     className="object-cover"
@@ -185,31 +199,28 @@ export default async function Page() {
               ))}
             </div>
 
-            {/* TEXT BLOCK */}
             <div>
               <h2 className="text-[20px] font-bold text-zinc-950">
                 Business & Holiday Travel
               </h2>
 
               <p className="mt-3 text-[11px] leading-[1.95] text-zinc-500 md:text-[12px]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Discover destinations that fit both your business needs and your
+                dream vacation plans.
               </p>
             </div>
 
-            {/* SLIDER */}
             <div className="overflow-hidden rounded-[8px] shadow-[0_12px_34px_rgba(0,0,0,0.06)]">
               <div className="aspect-[16/9] [&>*]:h-full [&>*]:w-full">
                 <SwiperBlog />
               </div>
             </div>
 
-            {/* TAG */}
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               <span className="text-[10px] text-zinc-500">Vacation</span>
             </div>
 
-            {/* LATEST TITLE */}
             <div className="mt-12 text-center">
               <p className="font-serif text-[14px] italic text-emerald-500">
                 Top Pick
@@ -220,12 +231,12 @@ export default async function Page() {
               </h2>
             </div>
 
-            {/* LATEST ARTICLES */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {latestArticles.map((article) => (
                 <LatestArticleCard
                   key={article.id}
-                  image={safeText(article.icon, FALLBACK_IMAGE)}
+                  id={article.id }
+                  image={getSafeImageSrc(article.icon)}
                   title={safeText(article.description, "Untitled article")}
                   date={safeText(article.name_uz, "May 2025")}
                 />
