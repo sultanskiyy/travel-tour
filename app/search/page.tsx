@@ -8,8 +8,10 @@ import {
   type SearchParamsType,
 } from "@/components/ApplyFilter";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
-  searchParams: Promise<SearchParamsType>;
+  searchParams: SearchParamsType;
   packages: PackageType[];
 };
 
@@ -18,23 +20,27 @@ const ITEMS_PER_PAGE = 6;
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
 
-const getSafeImage = (src?: string) => {
+const getSafeImage = (src?: string | null) => {
   if (!src || src === "string") return FALLBACK_IMAGE;
   if (src.startsWith("http://") || src.startsWith("https://")) return src;
+  if (src.startsWith("/")) return src;
   return FALLBACK_IMAGE;
 };
+
+function getFirst(value?: string | string[]) {
+  if (Array.isArray(value)) return value[0] ?? "";
+  return value ?? "";
+}
 
 export default async function TourCardsSarch({
   searchParams,
   packages,
 }: Props) {
-  const sp = await searchParams;
+  const sp = searchParams;
 
-  // FILTER
   const filteredTours = applyFilters(packages, sp);
 
-  // PAGINATION
-  const currentPage = Math.max(1, Number(sp.page || "1"));
+  const currentPage = Math.max(1, Number(getFirst(sp.page) || "1"));
   const totalPages = Math.max(
     1,
     Math.ceil(filteredTours.length / ITEMS_PER_PAGE)
@@ -48,29 +54,31 @@ export default async function TourCardsSarch({
     startIndex + ITEMS_PER_PAGE
   );
 
-  // LINK GENERATOR
   const createPageLink = (page: number) => {
     const params = new URLSearchParams();
 
-    if (sp.destination) params.set("destination", sp.destination);
-    if (sp.date) params.set("date", sp.date);
+    if (sp.search) params.set("search", getFirst(sp.search));
+    if (sp.location) params.set("location", getFirst(sp.location));
+    if (sp.destination) params.set("destination", getFirst(sp.destination));
+    if (sp.date) params.set("date", getFirst(sp.date));
+    if (sp.minPrice) params.set("minPrice", getFirst(sp.minPrice));
+    if (sp.maxPrice) params.set("maxPrice", getFirst(sp.maxPrice));
+    if (sp.onlyPromo) params.set("onlyPromo", getFirst(sp.onlyPromo));
 
     const appendArray = (key: string, value?: string | string[]) => {
       if (!value) return;
-      if (Array.isArray(value)) value.forEach((v) => params.append(key, v));
-      else params.append(key, value);
+
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, v));
+      } else {
+        params.append(key, value);
+      }
     };
 
     appendArray("typology", sp.typology);
     appendArray("duration", sp.duration);
     appendArray("difficulty", sp.difficulty);
     appendArray("minAge", sp.minAge);
-
-    // 🔥 MUHIM FIX
-    if (sp.minPrice) params.set("minPrice", sp.minPrice);
-    if (sp.maxPrice) params.set("maxPrice", sp.maxPrice);
-
-    if (sp.onlyPromo) params.set("onlyPromo", sp.onlyPromo);
 
     params.set("page", String(page));
 
@@ -79,7 +87,6 @@ export default async function TourCardsSarch({
 
   return (
     <section className="min-w-0 w-full">
-      {/* HEADER */}
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-black">All Tours</h2>
         <p className="text-sm text-gray-500">
@@ -87,20 +94,19 @@ export default async function TourCardsSarch({
         </p>
       </div>
 
-      {/* GRID */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        {paginatedTours.map((tour : PackageType) => (
+        {paginatedTours.map((tour) => (
           <div
             key={tour.id}
-            className="overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+            className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           >
-            {/* IMAGE */}
-            <div className="relative h-55 w-full bg-gray-200">
+            <div className="relative h-[220px] w-full bg-gray-200">
               <Image
                 src={getSafeImage(tour.cover_image)}
                 alt={tour.title_uz || "tour"}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
 
               {tour.is_promotion && (
@@ -110,7 +116,6 @@ export default async function TourCardsSarch({
               )}
             </div>
 
-            {/* INFO */}
             <div className="px-4 pb-4 pt-4">
               <div className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 text-[12px] text-gray-400 shadow-sm">
                 <div className="flex items-center gap-2">
@@ -125,9 +130,8 @@ export default async function TourCardsSarch({
               </div>
             </div>
 
-            {/* CONTENT */}
-            <div className="p-5 pt-0">
-              <h3 className="text-[20px] font-bold text-black">
+            <div className="flex flex-1 flex-col p-5 pt-0">
+              <h3 className="min-h-[56px] text-[20px] font-bold text-black">
                 {tour.title_uz || "Untitled tour"}
               </h3>
 
@@ -136,14 +140,13 @@ export default async function TourCardsSarch({
                 <span>{tour.departure_city || "Unknown location"}</span>
               </div>
 
-              <p className="mt-5 min-h-24 text-[13px] leading-6 text-gray-400">
+              <p className="mt-5 min-h-[96px] text-[13px] leading-6 text-gray-400">
                 {tour.description_uz ||
                   tour.description ||
                   "No description"}
               </p>
 
-              {/* FOOTER */}
-              <div className="mt-5 flex items-end justify-between border-t border-gray-100 pt-5">
+              <div className="mt-auto flex items-end justify-between border-t border-gray-100 pt-5">
                 <Link
                   href={`/single?id=${tour.id}`}
                   className="rounded bg-emerald-500 px-5 py-2 text-[12px] font-semibold text-white"
@@ -157,11 +160,11 @@ export default async function TourCardsSarch({
                     <span className="text-[30px] font-bold leading-none text-black">
                       ${tour.total_price ?? 0}
                     </span>
-                    {tour.original_price && (
+                    {tour.original_price ? (
                       <span className="mb-1 text-[12px] text-gray-400 line-through">
                         ${tour.original_price}
                       </span>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -169,7 +172,6 @@ export default async function TourCardsSarch({
           </div>
         ))}
 
-        {/* EMPTY */}
         {paginatedTours.length === 0 && (
           <div className="col-span-full rounded-xl border border-gray-200 bg-white p-10 text-center text-gray-500">
             No tours found
@@ -177,7 +179,6 @@ export default async function TourCardsSarch({
         )}
       </div>
 
-      {/* PAGINATION */}
       {totalPages > 1 && (
         <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
