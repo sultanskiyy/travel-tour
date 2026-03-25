@@ -20,11 +20,11 @@ const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
 
 function getSafeImageSrc(value?: string | null) {
-  if (!value) return null;
+  if (!value) return FALLBACK_IMAGE;
 
   const trimmed = value.trim();
 
-  if (!trimmed || trimmed === "string") return null;
+  if (!trimmed || trimmed === "string") return FALLBACK_IMAGE;
 
   if (
     trimmed.startsWith("http://") ||
@@ -34,14 +34,11 @@ function getSafeImageSrc(value?: string | null) {
     return trimmed;
   }
 
-  return null;
+  return FALLBACK_IMAGE;
 }
 
 function CategoryCard({ id, name, image }: CategoryCardProps) {
-  const safeImage = getSafeImageSrc(image);
-  const [imgSrc, setImgSrc] = useState(safeImage || FALLBACK_IMAGE);
-
-  if (!safeImage) return null;
+  const [imgSrc, setImgSrc] = useState(getSafeImageSrc(image));
 
   return (
     <Link
@@ -66,35 +63,40 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
 
 const CategoryToursSection = ({ categories = [] }: Props) => {
   const validCategories = categories.filter((el) => {
-    const icon = typeof el.icon === "string" ? el.icon.trim() : "";
-    return !!el.id && !!el.name_uz && !!icon && icon !== "string";
+    return !!el.id && !!(el.name_uz || el.name);
   });
 
   return (
     <section className="py-16">
       <Container className="px-9">
         <div className="max-w-130 pb-10">
-          <p className="text-sm text-emerald-500 font-medium">
+          <p className="text-sm font-medium text-emerald-500">
             Dream Vacation Destinations
           </p>
 
-          <h2 className="text-4xl font-bold mt-2">
+          <h2 className="mt-2 text-4xl font-bold">
             Plan the Trip of a Lifetime
           </h2>
         </div>
       </Container>
 
       <Container className="px-9">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {validCategories.map((el) => (
-            <CategoryCard
-              key={el.id}
-              id={el.id}
-              name={el.name_uz || "No Name"}
-              image={el.icon}
-            />
-          ))}
-        </div>
+        {validCategories.length === 0 ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-10 text-center text-gray-500">
+            Categories topilmadi
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {validCategories.map((el) => (
+              <CategoryCard
+                key={el.id}
+                id={el.id}
+                name={el.name_uz || el.name || "No Name"}
+                image={el.icon}
+              />
+            ))}
+          </div>
+        )}
       </Container>
     </section>
   );

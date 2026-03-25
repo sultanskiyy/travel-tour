@@ -1,4 +1,3 @@
-
 "use client";
 
 import Container from "@/components/Container";
@@ -33,7 +32,7 @@ function DestinationCard({ item }: { item: DestinationItem }) {
       href={item.href || "#"}
       className="group block overflow-hidden rounded-2xl"
     >
-      <div className="relative h-[320px] w-full bg-gray-200 rounded-2xl overflow-hidden">
+      <div className="relative h-[320px] w-full overflow-hidden rounded-2xl bg-gray-200">
         <Image
           src={imgSrc}
           alt={item.title}
@@ -41,9 +40,10 @@ function DestinationCard({ item }: { item: DestinationItem }) {
           quality={100}
           sizes="(max-width:768px) 100vw, (max-width:1024px) 50vw, 25vw"
           className="object-cover transition-transform duration-500 group-hover:scale-110"
+          onError={() => setImgSrc(FALLBACK_IMAGE)}
         />
 
-        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+        <div className="absolute inset-0 bg-black/30 transition group-hover:bg-black/40" />
 
         <div className="absolute bottom-6 left-6 text-white">
           <h3 className="text-2xl font-bold">{item.title}</h3>
@@ -70,33 +70,39 @@ export default function DestinationsSection({ destinations = [] }: Props) {
           </h2>
         </div>
 
-        <Swiper
-          modules={[Autoplay]}
-          spaceBetween={20}
-          slidesPerView={4}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-          loop={true}
-          breakpoints={{
-            320: {
-              slidesPerView: 1,
-            },
-            640: {
-              slidesPerView: 2,
-            },
-            1024: {
-              slidesPerView: 4,
-            },
-          }}
-        >
-          {destinations.map((item) => (
-            <SwiperSlide key={item.id}>
-              <DestinationCard item={item} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {destinations.length === 0 ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-10 text-center text-gray-500">
+            Destinations topilmadi
+          </div>
+        ) : (
+          <Swiper
+            modules={[Autoplay]}
+            spaceBetween={20}
+            slidesPerView={4}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            loop={destinations.length > 4}
+            breakpoints={{
+              320: {
+                slidesPerView: 1,
+              },
+              640: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 4,
+              },
+            }}
+          >
+            {destinations.map((item) => (
+              <SwiperSlide key={item.id}>
+                <DestinationCard item={item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
       </Container>
     </section>
   );
