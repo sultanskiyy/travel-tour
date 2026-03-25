@@ -6,7 +6,7 @@ import {
   applyFilters,
   getDurationLabel,
   type SearchParamsType,
-} from "./ApplyFilter";
+} from "@/components/ApplyFilter";
 
 type Props = {
   searchParams: Promise<SearchParamsType>;
@@ -89,13 +89,13 @@ export default async function TourCardsSarch({
 
       {/* GRID */}
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-        {paginatedTours.map((tour) => (
+        {paginatedTours.map((tour : PackageType) => (
           <div
             key={tour.id}
             className="overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           >
             {/* IMAGE */}
-            <div className="relative h-[220px] w-full bg-gray-200">
+            <div className="relative h-55 w-full bg-gray-200">
               <Image
                 src={getSafeImage(tour.cover_image)}
                 alt={tour.title_uz || "tour"}
@@ -136,7 +136,7 @@ export default async function TourCardsSarch({
                 <span>{tour.departure_city || "Unknown location"}</span>
               </div>
 
-              <p className="mt-5 min-h-[96px] text-[13px] leading-6 text-gray-400">
+              <p className="mt-5 min-h-24 text-[13px] leading-6 text-gray-400">
                 {tour.description_uz ||
                   tour.description ||
                   "No description"}

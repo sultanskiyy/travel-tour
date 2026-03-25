@@ -1,33 +1,51 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type Props = {
-  image: string;
+  id: number | string;
   title: string;
-  date: string;
+  image?: string | null;
+  date?: string;
 };
 
-export default function LatestArticleCard({ image, title, date }: Props) {
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
+
+function getSafeImageSrc(value?: string | null) {
+  if (!value) return FALLBACK_IMAGE;
+
+  const trimmed = value.trim();
+
+  if (!trimmed || trimmed === "string") return FALLBACK_IMAGE;
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+
+  return FALLBACK_IMAGE;
+}
+
+export default function LatestArticleCard({ id, title, image, date }: Props) {
   return (
-    <div className="w-full">
+    <Link href={`/blog/${id}`} className="block w-full">
       <div className="overflow-hidden rounded-md">
         <Image
-          src={image}
-          alt={title}
+          src={getSafeImageSrc(image)}
+          alt={title || "Article image"}
           width={300}
-          height={95}
-          className="h-[95px] w-full rounded-md object-cover"
+          height={220}
+          className="h-55 w-full object-cover transition duration-300 hover:scale-105"
         />
       </div>
 
-      <h3 className="mt-2 text-[11px] font-semibold leading-4 text-black">
-        {title}
-      </h3>
-
-      <p className="mt-1 text-[9px] text-gray-500">{date}</p>
-
-      <button className="mt-3 rounded-sm bg-emerald-500 px-3 py-1 text-[9px] font-medium text-white">
-        Read More
-      </button>
-    </div>
+      <div className="pt-4">
+        {date ? <p className="text-sm text-gray-500">{date}</p> : null}
+        <h3 className="mt-2 text-lg font-semibold text-gray-900">{title}</h3>
+      </div>
+    </Link>
   );
 }

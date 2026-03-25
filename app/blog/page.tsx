@@ -22,6 +22,7 @@ function safeText(value?: string | null, fallback = "") {
   if (!value) return fallback;
 
   const text = value.trim();
+
   if (!text || text === "string") return fallback;
 
   return text;
@@ -49,18 +50,18 @@ export default async function BlogPage() {
   let categories: CategoryType[] = [];
 
   try {
-    const response = await getData<CategoryType[]>({
+    const response = await getData({
       url: "category",
     });
 
-    categories = Array.isArray(response) ? response : [];
+    categories = Array.isArray(response) ? (response as CategoryType[]) : [];
   } catch (error) {
     console.error("BLOG PAGE API ERROR:", error);
     categories = [];
   }
 
   const validCategories = categories.filter(
-    (item) => item?.id && safeText(item.name_uz),
+    (item) => item?.id && safeText(item.name_uz)
   );
 
   const galleryImages = validCategories.slice(3, 5);
@@ -134,8 +135,8 @@ export default async function BlogPage() {
               <p>
                 There are so many places to explore and so many adventures
                 waiting for you. What makes a great travel destination depends
-                on what kind of traveler you are, whether it is culture, natural
-                beauty, or history that interests you most.
+                on what kind of traveler you are, whether it is culture,
+                natural beauty, or history that interests you most.
               </p>
 
               <p>
@@ -186,7 +187,7 @@ export default async function BlogPage() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {galleryImages.map((item) => (
                 <div
-                  key={item.id}
+                  key={String(item.id)}
                   className="relative aspect-[5/4] overflow-hidden rounded-lg shadow-[0_12px_34px_rgba(0,0,0,0.06)]"
                 >
                   <Image
@@ -205,8 +206,8 @@ export default async function BlogPage() {
               </h2>
 
               <p className="mt-3 text-[11px] leading-[1.95] text-zinc-500 md:text-[12px]">
-                Discover destinations that fit both your business needs and your
-                dream vacation plans.
+                Discover destinations that fit both your business needs and
+                your dream vacation plans.
               </p>
             </div>
 
@@ -234,8 +235,8 @@ export default async function BlogPage() {
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {latestArticles.map((article) => (
                 <LatestArticleCard
-                  key={article.id}
-                  id={article.id }
+                  key={String(article.id)}
+                  id={article.id}
                   image={getSafeImageSrc(article.icon)}
                   title={safeText(article.description, "Untitled article")}
                   date={safeText(article.name_uz, "May 2025")}

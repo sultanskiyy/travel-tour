@@ -73,7 +73,7 @@ const CategoryToursSection = ({ categories = [] }: Props) => {
   return (
     <section className="py-16">
       <Container className="px-9">
-        <div className="max-w-[520px] pb-10">
+        <div className="max-w-130 pb-10">
           <p className="text-sm text-emerald-500 font-medium">
             Dream Vacation Destinations
           </p>
