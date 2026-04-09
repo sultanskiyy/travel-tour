@@ -27,10 +27,14 @@ export default async function HomeToursSection() {
 
   try {
     const response = await getData({ url: "package" });
-    packages = Array.isArray(response) ? response : [];
-    console.log("packages count:", packages.length);
+
+    packages = Array.isArray(response)
+      ? response.filter((item) => typeof item === "object" && item !== null)
+      : [];
+
+    console.log("[HomeToursSection] packages count:", packages.length);
   } catch (error) {
-    console.error("Package fetch error:", error);
+    console.error("[HomeToursSection] Package fetch error:", error);
   }
 
   const tours = packages.slice(0, 3);
@@ -56,12 +60,6 @@ export default async function HomeToursSection() {
                     fill
                     className="object-cover"
                   />
-
-                  {item.is_promotion && (
-                    <span className="absolute right-4 top-4 rounded-full bg-fuchsia-400 px-3 py-1 text-[10px] font-semibold text-white">
-                      SALE
-                    </span>
-                  )}
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
@@ -98,12 +96,10 @@ export default async function HomeToursSection() {
 
                       <div className="text-right">
                         <p className="mb-2 text-[16px] text-gray-400">From</p>
-
                         <div className="flex items-end gap-2">
                           <span className="text-[46px] font-bold leading-none text-black">
                             ${toNumber(item.total_price)}
                           </span>
-
                           {item.original_price ? (
                             <span className="mb-1 text-sm text-gray-400 line-through">
                               ${toNumber(item.original_price)}
