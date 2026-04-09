@@ -19,22 +19,38 @@ function getDurationLabel(item: PackageType) {
   return "Unknown duration";
 }
 
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
+function getSafeImageSrc(value?: string | null) {
+  const FALLBACK_IMAGE =
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
+
+  if (!value) return FALLBACK_IMAGE;
+
+  const trimmed = value.trim();
+
+  if (!trimmed) return FALLBACK_IMAGE;
+  if (trimmed === "string") return FALLBACK_IMAGE;
+  if (trimmed.includes("ADDRESS_DUBAI")) return FALLBACK_IMAGE;
+  if (trimmed.includes("ADDRESS_")) return FALLBACK_IMAGE;
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+
+  return FALLBACK_IMAGE;
+}
 
 export default async function HomeToursSection() {
   let packages: PackageType[] = [];
 
   try {
     const response = await getData({ url: "package" });
-
-    packages = Array.isArray(response)
-      ? response.filter((item) => typeof item === "object" && item !== null)
-      : [];
-
-    console.log("[HomeToursSection] packages count:", packages.length);
+    packages = Array.isArray(response) ? response : [];
   } catch (error) {
-    console.error("[HomeToursSection] Package fetch error:", error);
+    console.error("Package fetch error:", error);
   }
 
   const tours = packages.slice(0, 3);
@@ -55,7 +71,7 @@ export default async function HomeToursSection() {
               >
                 <div className="relative h-[250px] w-full overflow-hidden">
                   <Image
-                    src={item.cover_image || FALLBACK_IMAGE}
+                    src={getSafeImageSrc(item.cover_image)}
                     alt={item.title_uz || "tour image"}
                     fill
                     className="object-cover"
@@ -96,10 +112,12 @@ export default async function HomeToursSection() {
 
                       <div className="text-right">
                         <p className="mb-2 text-[16px] text-gray-400">From</p>
+
                         <div className="flex items-end gap-2">
                           <span className="text-[46px] font-bold leading-none text-black">
                             ${toNumber(item.total_price)}
                           </span>
+
                           {item.original_price ? (
                             <span className="mb-1 text-sm text-gray-400 line-through">
                               ${toNumber(item.original_price)}
