@@ -61,9 +61,17 @@ function CategoryCard({ id, name, image }: CategoryCardProps) {
   );
 }
 
-const CategoryToursSection = ({ categories = [] }: Props) => {
+export default function CategoryToursSection({ categories = [] }: Props) {
   const validCategories = categories.filter((el) => {
-    return !!el.id && !!(el.name_uz || el.name);
+    if (!el || typeof el !== "object") return false;
+
+    const name = (el.name_uz || el.name || "").trim();
+
+    if (!el.id) return false;
+    if (!name) return false;
+    if (name.toLowerCase() === "string") return false;
+
+    return true;
   });
 
   return (
@@ -100,6 +108,4 @@ const CategoryToursSection = ({ categories = [] }: Props) => {
       </Container>
     </section>
   );
-};
-
-export default CategoryToursSection;
+}
