@@ -8,9 +8,11 @@ import {
   type SearchParamsType,
 } from "@/components/ApplyFilter";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
-  searchParams: Promise<SearchParamsType>;
-  packages: PackageType[];
+  searchParams?: SearchParamsType;
+  packages?: PackageType[];
 };
 
 const ITEMS_PER_PAGE = 6;
@@ -18,9 +20,20 @@ const ITEMS_PER_PAGE = 6;
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80";
 
-const getSafeImage = (src?: string) => {
+const getSafeImage = (src?: string | null) => {
   if (!src || src === "string") return FALLBACK_IMAGE;
-  if (src.startsWith("http://") || src.startsWith("https://")) return src;
+
+  const trimmed = src.trim();
+
+  if (!trimmed) return FALLBACK_IMAGE;
+  if (trimmed.includes("ADDRESS_")) return FALLBACK_IMAGE;
+
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith("/")) return trimmed;
+
   return FALLBACK_IMAGE;
 };
 
@@ -29,15 +42,28 @@ function getFirst(value?: string | string[]) {
   return value ?? "";
 }
 
+function toNumber(value: unknown): number {
+  if (typeof value === "number") return value;
+
+  if (typeof value === "string") {
+    const cleaned = value.replace(/[^\d.]/g, "");
+    const parsed = Number(cleaned);
+    return Number.isNaN(parsed) ? 0 : parsed;
+  }
+
+  return 0;
+}
+
 export default async function TourCardsSarch({
-  searchParams,
-  packages,
+  searchParams = {},
+  packages = [],
 }: Props) {
-  const sp = await searchParams;
+  const sp = searchParams;
+  const safePackages = Array.isArray(packages) ? packages : [];
 
-  const filteredTours = applyFilters(packages, sp);
+  const filteredTours = applyFilters(safePackages, sp);
 
-  const currentPage = Math.max(1, Number(sp.page || "1"));
+  const currentPage = Math.max(1, Number(getFirst(sp.page) || "1"));
   const totalPages = Math.max(
     1,
     Math.ceil(filteredTours.length / ITEMS_PER_PAGE),
@@ -64,9 +90,12 @@ export default async function TourCardsSarch({
 
     const appendArray = (key: string, value?: string | string[]) => {
       if (!value) return;
+
       if (Array.isArray(value)) {
-        value.forEach((v) => params.append(key, v));
-      } else {
+        value.forEach((v) => {
+          if (v) params.append(key, v);
+        });
+      } else if (value) {
         params.append(key, value);
       }
     };
@@ -94,7 +123,7 @@ export default async function TourCardsSarch({
         {paginatedTours.map((tour) => (
           <div
             key={tour.id}
-            className="overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+            className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           >
             <div className="relative h-55 w-full bg-gray-200">
               <Image
@@ -102,6 +131,7 @@ export default async function TourCardsSarch({
                 alt={tour.title_uz || "tour"}
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
 
               {tour.is_promotion && (
@@ -125,8 +155,8 @@ export default async function TourCardsSarch({
               </div>
             </div>
 
-            <div className="p-5 pt-0">
-              <h3 className="text-[20px] font-bold text-black">
+            <div className="flex flex-1 flex-col p-5 pt-0">
+              <h3 className="min-h-14 text-[20px] font-bold text-black">
                 {tour.title_uz || "Untitled tour"}
               </h3>
 
@@ -139,7 +169,7 @@ export default async function TourCardsSarch({
                 {tour.description_uz || tour.description || "No description"}
               </p>
 
-              <div className="mt-5 flex items-end justify-between border-t border-gray-100 pt-5">
+              <div className="mt-auto flex items-end justify-between border-t border-gray-100 pt-5">
                 <Link
                   href={`/single?id=${tour.id}`}
                   className="rounded bg-emerald-500 px-5 py-2 text-[12px] font-semibold text-white"
@@ -151,13 +181,13 @@ export default async function TourCardsSarch({
                   <p className="text-[12px] text-gray-400">From</p>
                   <div className="flex items-end gap-1">
                     <span className="text-[30px] font-bold leading-none text-black">
-                      ${tour.total_price ?? 0}
+                      ${toNumber(tour.total_price)}
                     </span>
-                    {tour.original_price && (
+                    {tour.original_price ? (
                       <span className="mb-1 text-[12px] text-gray-400 line-through">
-                        ${tour.original_price}
+                        ${toNumber(tour.original_price)}
                       </span>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>

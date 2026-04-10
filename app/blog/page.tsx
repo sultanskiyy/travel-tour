@@ -4,7 +4,7 @@ import Image from "next/image";
 import LatestArticleCard from "@/components/LatestArticleCard";
 import SwiperBlog from "@/components/SwiperBlog";
 import Container from "@/components/Container";
-import getData from "@/service/api";
+import { getData } from "@/service/api";
 import type { CategoryType } from "@/types/CategoryType";
 
 const HERO_IMAGE =

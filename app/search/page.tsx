@@ -2,11 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock3, MapPin, Mail, Share2 } from "lucide-react";
 import type { PackageType } from "@/types/PackageTypes";
-import {
-  applyFilters,
-  getDurationLabel,
-  type SearchParamsType,
-} from "@/components/ApplyFilter";
+import {applyFilters, getDurationLabel, type SearchParamsType,} from "@/components/ApplyFilter";
 
 export const dynamic = "force-dynamic";
 
@@ -100,7 +96,7 @@ export default async function TourCardsSarch({
             key={tour.id}
             className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           >
-            <div className="relative h-[220px] w-full bg-gray-200">
+            <div className="relative h-55 w-full bg-gray-200">
               <Image
                 src={getSafeImage(tour.cover_image)}
                 alt={tour.title_uz || "tour"}
@@ -131,7 +127,7 @@ export default async function TourCardsSarch({
             </div>
 
             <div className="flex flex-1 flex-col p-5 pt-0">
-              <h3 className="min-h-[56px] text-[20px] font-bold text-black">
+              <h3 className="min-h-14 text-[20px] font-bold text-black">
                 {tour.title_uz || "Untitled tour"}
               </h3>
 
@@ -140,7 +136,7 @@ export default async function TourCardsSarch({
                 <span>{tour.departure_city || "Unknown location"}</span>
               </div>
 
-              <p className="mt-5 min-h-[96px] text-[13px] leading-6 text-gray-400">
+              <p className="mt-5 min-h-24 text-[13px] leading-6 text-gray-400">
                 {tour.description_uz ||
                   tour.description ||
                   "No description"}

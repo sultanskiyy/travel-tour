@@ -6,7 +6,7 @@ import { CiMapPin } from "react-icons/ci"
 import { FaMapSigns } from "react-icons/fa"
 import { GoClock } from "react-icons/go"
 import { MdOutlineMan } from "react-icons/md"
-import getData from "@/service/api"
+import { getData } from "@/service/api"
 
 type Tour = {
     id: string

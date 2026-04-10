@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import getData from "@/service/api";
+import { getData } from "@/service/api"; // FIX: default -> named import
 import type { PackageType } from "@/types/PackageTypes";
 
 export const dynamic = "force-dynamic";
@@ -67,9 +67,9 @@ export default async function HomeToursSection() {
             {tours.map((item, index) => (
               <div
                 key={item.id ?? index}
-                className="flex h-full flex-col overflow-hidden rounded-[24px] bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
+                className="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
               >
-                <div className="relative h-[250px] w-full overflow-hidden">
+                <div className="relative h-62.5 w-full overflow-hidden">
                   <Image
                     src={getSafeImageSrc(item.cover_image)}
                     alt={item.title_uz || "tour image"}
@@ -87,7 +87,7 @@ export default async function HomeToursSection() {
                     </div>
                   </div>
 
-                  <h3 className="min-h-[96px] text-[28px] font-bold leading-[1.25] text-black">
+                  <h3 className="min-h-24 text-[28px] font-bold leading-tight text-black">
                     {item.title_uz || "Untitled"}
                   </h3>
 
@@ -95,7 +95,7 @@ export default async function HomeToursSection() {
                     📍 {item.departure_city || "Unknown"}
                   </p>
 
-                  <p className="mt-5 min-h-[96px] text-[17px] leading-8 text-gray-500">
+                  <p className="mt-5 min-h-24 text-[17px] leading-8 text-gray-500">
                     {item.description_uz ||
                       item.description ||
                       "No description"}

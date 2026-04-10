@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { PackageType } from "@/types/PackageTypes";
-import getData from "@/service/api";
+import { getData } from "@/service/api";
 
 function getDurationLabel(item: PackageType): string {
   if (item.duration_label) return item.duration_label;

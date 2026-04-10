@@ -11,7 +11,7 @@ import "swiper/css/navigation";
 import "../app/searchsweger.css";
 
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import getData from "@/service/api";
+import { getData } from "@/service/api";
 import Image from "next/image";
 import { CategoryType } from "@/types/CategoryType";
 

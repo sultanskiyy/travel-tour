@@ -1,6 +1,6 @@
-import getData from "@/service/api";
 import type { CategoryType } from "@/types/CategoryType";
-import type { DestinationType } from "@/types/DestinationType";
+import { getData } from "@/service/api";
+
 
 import HeroSection from "@/components/home/HeroSection";
 import CategoryToursSection from "@/components/home/CategoryToursSection";
